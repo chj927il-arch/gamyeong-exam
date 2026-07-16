@@ -1,8 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-/// 반투명 블러 카드 (글래스모피즘). tint를 주면 색이 있는 유리처럼 보임.
+/// 화이트 배경 위의 심플한 서페이스 카드 (옅은 보더 + 아주 은은한 그림자).
+/// 이름은 GlassCard로 유지하되(호출부 영향 최소화), 라이트 테마에서는
+/// 블러 없는 플랫 카드로 렌더링한다.
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -15,39 +16,28 @@ class GlassCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(16),
-    this.radius = const BorderRadius.all(Radius.circular(20)),
+    this.radius = const BorderRadius.all(Radius.circular(18)),
     this.tint,
-    this.tintOpacity = 0.14,
+    this.tintOpacity = 0.08,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final fillColor = tint == null ? AppColors.glassFill : tint!.withValues(alpha: tintOpacity);
-    final borderColor = tint == null ? AppColors.glassBorder : tint!.withValues(alpha: 0.35);
+    final borderColor = tint == null ? AppColors.glassBorder : tint!.withValues(alpha: 0.28);
 
-    final content = DecoratedBox(
+    final content = Container(
+      padding: padding,
       decoration: BoxDecoration(
+        color: fillColor,
         borderRadius: radius,
+        border: Border.all(color: borderColor),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 24, offset: const Offset(0, 10)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 18, offset: const Offset(0, 6)),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: radius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: fillColor,
-              borderRadius: radius,
-              border: Border.all(color: borderColor),
-            ),
-            child: child,
-          ),
-        ),
-      ),
+      child: child,
     );
 
     if (onTap == null) return content;

@@ -17,12 +17,12 @@ class GamyeongExamApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '가맹거래사 문제은행',
-      theme: AppTheme.dark(),
+      theme: AppTheme.light(),
       home: const RootScreen(),
       // 웹/데스크톱 브라우저처럼 화면이 넓을 때도 폰 앱처럼 보이도록 폭 제한
       builder: (context, child) {
         return ColoredBox(
-          color: AppColors.bgBase,
+          color: AppColors.trackBg,
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 430),
@@ -55,10 +55,13 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 학습(홈) 탭은 자체 커스텀 헤더를 쓰므로 공용 AppBar를 숨김
-    final showAppBar = _tabIndex != 0;
     return Scaffold(
-      appBar: showAppBar ? AppBar(title: Text(_titles[_tabIndex])) : null,
+      appBar: AppBar(
+        title: _tabIndex == 0
+            ? const Text('가맹거래사 문제은행', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 26))
+            : Text(_titles[_tabIndex]),
+        centerTitle: _tabIndex == 0,
+      ),
       body: AppBackground(child: SafeArea(child: _tabs[_tabIndex])),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tabIndex,

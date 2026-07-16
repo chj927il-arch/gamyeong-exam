@@ -12,7 +12,10 @@ class QuizScreen extends StatefulWidget {
   final String subjectId;
   final String subjectName;
 
-  const QuizScreen({super.key, required this.subjectId, required this.subjectName});
+  /// 지정하면 해당 챕터(유형)의 문제만 필터링해서 보여준다.
+  final String? category;
+
+  const QuizScreen({super.key, required this.subjectId, required this.subjectName, this.category});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -28,7 +31,9 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    _questions = sampleQuestions.where((q) => q.subjectId == widget.subjectId).toList();
+    _questions = sampleQuestions
+        .where((q) => q.subjectId == widget.subjectId && (widget.category == null || q.category == widget.category))
+        .toList();
   }
 
   void _select(int index) {
@@ -54,10 +59,14 @@ class _QuizScreenState extends State<QuizScreen> {
 
     if (_questions.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.subjectName)),
+        appBar: AppBar(title: Text(widget.category ?? widget.subjectName)),
         body: AppBackground(
-          child: const Center(
-            child: Text('아직 이 과목의 샘플 문제가 없습니다.', style: TextStyle(color: AppColors.textSecondary)),
+          child: Center(
+            child: Text(
+              widget.category == null ? '아직 이 과목의 샘플 문제가 없습니다.' : '이 챕터는 문제 준비 중이에요.\n곧 유사문제가 추가될 예정입니다.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
           ),
         ),
       );
@@ -68,7 +77,8 @@ class _QuizScreenState extends State<QuizScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.subjectName),
+        title: Text(widget.category ?? widget.subjectName),
+        centerTitle: false,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -81,7 +91,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
                 child: Text(
                   '이번 회차 $_solvedInSession문제',
-                  style: TextStyle(color: style.color, fontWeight: FontWeight.w700, fontSize: 12),
+                  style: TextStyle(color: style.color, fontWeight: FontWeight.w800, fontSize: 13),
                 ),
               ),
             ),
@@ -98,7 +108,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 Chip(
                   label: Text(question.category),
                   backgroundColor: style.color.withValues(alpha: 0.16),
-                  labelStyle: TextStyle(color: style.color, fontWeight: FontWeight.w700),
+                  labelStyle: TextStyle(color: style.color, fontWeight: FontWeight.w800, fontSize: 13.5),
                   visualDensity: VisualDensity.compact,
                 ),
                 const SizedBox(height: 14),
@@ -107,9 +117,9 @@ class _QuizScreenState extends State<QuizScreen> {
                   child: Text(
                     question.stem,
                     style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      height: 1.4,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      height: 1.45,
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -168,18 +178,18 @@ class _OptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color tint = Colors.white;
-    double tintOpacity = 0.06;
-    Color badgeBg = Colors.white.withValues(alpha: 0.08);
+    double tintOpacity = 0.0;
+    Color badgeBg = AppColors.trackBg;
     Color badgeFg = AppColors.textSecondary;
     Widget? trailing;
     double opacity = 1;
 
     switch (state) {
       case _OptionState.selected:
-        tint = AppColors.gold;
+        tint = AppColors.primary;
         tintOpacity = 0.12;
-        badgeBg = AppColors.gold.withValues(alpha: 0.22);
-        badgeFg = AppColors.goldBright;
+        badgeBg = AppColors.primary.withValues(alpha: 0.22);
+        badgeFg = AppColors.primaryDark;
         break;
       case _OptionState.correct:
         tint = AppColors.correct;
@@ -212,17 +222,17 @@ class _OptionTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 28,
-              height: 28,
+              width: 30,
+              height: 30,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: badgeBg, shape: BoxShape.circle),
-              child: Text(label, style: TextStyle(color: badgeFg, fontWeight: FontWeight.w800, fontSize: 13)),
+              child: Text(label, style: TextStyle(color: badgeFg, fontWeight: FontWeight.w800, fontSize: 15)),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(fontSize: 15, height: 1.3, color: AppColors.textPrimary),
+                style: const TextStyle(fontSize: 17, height: 1.35, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
               ),
             ),
             ?trailing,
@@ -266,14 +276,14 @@ class _FeedbackPanel extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       isCorrect ? '정답입니다' : '아쉬워요, 오답입니다',
-                      style: TextStyle(color: color, fontWeight: FontWeight.w800, fontSize: 15),
+                      style: TextStyle(color: color, fontWeight: FontWeight.w800, fontSize: 17),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Text(
                   question.summaryExplanation,
-                  style: const TextStyle(fontSize: 14, height: 1.5, color: AppColors.textPrimary),
+                  style: const TextStyle(fontSize: 16, height: 1.55, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
                 ),
                 if (question.keyPoints.isNotEmpty) ...[
                   const SizedBox(height: 10),
@@ -283,8 +293,8 @@ class _FeedbackPanel extends StatelessWidget {
                     children: question.keyPoints
                         .map((k) => Chip(
                               label: Text(k),
-                              backgroundColor: Colors.white.withValues(alpha: 0.08),
-                              labelStyle: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 12),
+                              backgroundColor: Colors.white.withValues(alpha: 0.5),
+                              labelStyle: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 13),
                               visualDensity: VisualDensity.compact,
                             ))
                         .toList(),
