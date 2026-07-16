@@ -26,18 +26,26 @@ class GlassCard extends StatelessWidget {
     final fillColor = tint == null ? AppColors.glassFill : tint!.withValues(alpha: tintOpacity);
     final borderColor = tint == null ? AppColors.glassBorder : tint!.withValues(alpha: 0.35);
 
-    final content = ClipRRect(
-      borderRadius: radius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            color: fillColor,
-            borderRadius: radius,
-            border: Border.all(color: borderColor),
+    final content = DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 24, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: radius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              color: fillColor,
+              borderRadius: radius,
+              border: Border.all(color: borderColor),
+            ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );

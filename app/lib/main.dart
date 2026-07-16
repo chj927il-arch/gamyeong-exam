@@ -19,6 +19,18 @@ class GamyeongExamApp extends StatelessWidget {
       title: '가맹거래사 문제은행',
       theme: AppTheme.dark(),
       home: const RootScreen(),
+      // 웹/데스크톱 브라우저처럼 화면이 넓을 때도 폰 앱처럼 보이도록 폭 제한
+      builder: (context, child) {
+        return ColoredBox(
+          color: AppColors.bgBase,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 430),
+              child: child,
+            ),
+          ),
+        );
+      },
     );
   }
 }
