@@ -48,10 +48,16 @@ app/lib/
 ```
 실행 확인: `cd app && flutter run -d chrome` 또는 `flutter run -d web-server --web-port=8080` 후 브라우저에서 `http://localhost:8080`
 
-### 디자인 방향
+### 디자인 방향 (2026-07-16 사용자 피드백으로 확정)
+- **톤**: 처음엔 라이트+파스텔로 만들었으나 사용자가 "너무 단조롭다" 피드백 → **다크 네이비 배경 + 골드(`#E3B563`) 포인트 + 글래스모피즘**(반투명 블러 카드)으로 전면 교체.
+  - 참고: 콴다/토익류 "진하고 고급스러운 다크톤", 그리고 competitor 프로젝트(경쟁사 대시보드)에서 이미 쓴 다크모드+글래스모피즘 톤과 동일 계열.
+  - "가벼운 학습 앱"보다는 "신뢰감 있는 자격증 준비 앱" 톤 — 전문적이되 진행률·스트릭으로 동기부여.
+- **웹 프리뷰가 휑해 보였던 이유**: Flutter web을 데스크톱 브라우저 폭(1280px) 그대로 렌더링해서 폰 앱이 늘어나 보였던 것. → `main.dart`의 `MaterialApp.builder`에서 **최대 폭 430px로 제한**(웹/데스크톱에서만 체감, 실제 모바일 기기에선 영향 없음).
+- **글래스모피즘이 밋밋해 보였던 이유**: `BackdropFilter`가 블러할 대상(배경)이 단색 그라데이션뿐이라 효과가 거의 안 보였음. → `app_background.dart`에 골드/블루/퍼플 블러 glow orb 3개 추가해서 카드에 실제로 유리처럼 비치는 색이 생기도록 함.
 - 폰트: Google Fonts `Noto Sans KR` (한글 가독성, 추후 Pretendard로 교체 가능)
-- 톤: "가벼운 학습 앱"보다는 "신뢰감 있는 자격증 준비 앱" — 전문적이되 진행률·스트릭 같은 동기부여 요소로 친근함 부여
-- 홈 화면 상단 그라데이션 헤더(오늘 목표·스트릭)와 과목별 진행률은 현재 목업 값(`home_screen.dart`의 `_mockProgress` 등) — 실제 학습 데이터 연동 필요
+- 재사용 위젯: `widgets/glass_card.dart`(GlassCard — 반투명 블러 카드, tint로 색 지정), `widgets/app_background.dart`(AppBackground — 배경 글로우)
+- 홈 화면 상단 헤더(오늘 목표·스트릭)와 과목별 진행률은 현재 목업 값(`home_screen.dart`의 `_mockProgress` 등) — 실제 학습 데이터 연동 필요
+- **다음에 이어갈 것**: 사용자가 새 다크+글래스 디자인을 아직 최종 확인 전. 집 PC에서 이어서 볼 때 `flutter run -d web-server --web-port=아무포트` 후 브라우저로 열어서 추가 피드백 받을 것.
 
 ## 여러 PC에서 이어작업하기
 1. `git clone https://github.com/chj927il-arch/gamyeong-exam.git`
