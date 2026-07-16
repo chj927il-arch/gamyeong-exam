@@ -19,11 +19,14 @@ class EmptyState extends StatelessWidget {
             Container(
               width: 72,
               height: 72,
-              decoration: const BoxDecoration(color: AppColors.primarySoft, shape: BoxShape.circle),
-              child: Icon(icon, size: 34, color: AppColors.primary),
+              decoration: BoxDecoration(color: AppColors.gold.withValues(alpha: 0.14), shape: BoxShape.circle),
+              child: Icon(icon, size: 34, color: AppColors.goldBright),
             ),
             const SizedBox(height: 20),
-            Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+            ),
             const SizedBox(height: 8),
             Text(
               description,

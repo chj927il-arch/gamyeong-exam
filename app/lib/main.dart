@@ -4,6 +4,7 @@ import 'screens/wrong_note_screen.dart';
 import 'screens/compiled_note_screen.dart';
 import 'screens/stats_screen.dart';
 import 'theme/app_theme.dart';
+import 'widgets/app_background.dart';
 
 void main() {
   runApp(const GamyeongExamApp());
@@ -16,7 +17,7 @@ class GamyeongExamApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '가맹거래사 문제은행',
-      theme: AppTheme.light(),
+      theme: AppTheme.dark(),
       home: const RootScreen(),
     );
   }
@@ -46,7 +47,7 @@ class _RootScreenState extends State<RootScreen> {
     final showAppBar = _tabIndex != 0;
     return Scaffold(
       appBar: showAppBar ? AppBar(title: Text(_titles[_tabIndex])) : null,
-      body: SafeArea(child: _tabs[_tabIndex]),
+      body: AppBackground(child: SafeArea(child: _tabs[_tabIndex])),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tabIndex,
         onDestinationSelected: (i) => setState(() => _tabIndex = i),
