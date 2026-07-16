@@ -24,11 +24,27 @@
 - [x] 프로젝트 폴더 생성 + git 초기화 + GitHub 비공개 저장소 push
 - [x] Flutter SDK 설치 (회사 PC, `C:\flutter`, PATH 등록, stable 채널 3.44.6)
 - [x] GitHub CLI 설치 + 로그인 (`chj927il-arch` 계정)
-- [ ] `flutter create`로 실제 앱 프로젝트 스캐폴딩 — **아직 안 함**
+- [x] `flutter create`로 앱 프로젝트 스캐폴딩 (`app/` 폴더, 프로젝트명 `gamyeong_exam`, org `com.gamyeongexam`)
+  - Android SDK/Android Studio 미설치라 Android 빌드는 아직 불가. **Chrome(웹)으로는 실행 가능**(`flutter run -d chrome`).
+  - iOS는 Windows에서 빌드 불가(Mac 필요).
+- [x] 기본 데이터 모델 작성 (`app/lib/models/`): `ExamSubject`(과목·세부영역), `Question`(문제/해설/키포인트/원본연결), `QuestionAttempt`(풀이기록), `MasteryRecord`(숙련도·반복노출 판단), `CompiledNoteItem`(단권화 항목)
+- [x] 기본 화면 뼈대 (`app/lib/screens/`): 학습(과목선택→문제풀이)/오답노트/단권화/통계 4탭 구조, 샘플문제 3개로 화면 확인 가능
+- [x] `flutter analyze` 통과, 기본 위젯 테스트 통과
 - [ ] Firebase 프로젝트 생성/연동 — **아직 안 함**
-- [ ] Gemini API 키 발급/연동 — **아직 안 함**
-- [ ] 화면 구성, 데이터 모델(문제/오답노트/단권화 등) 기획 — **아직 안 함**
+- [ ] Gemini API 키 발급/연동, 실제 유사문제 생성 로직 — **아직 안 함**
 - [ ] 큐넷 기출문제 확보 방식 결정 — **아직 안 함**
+- [ ] 오답노트/단권화/통계 실제 데이터 연동 (현재는 안내 문구만 있는 placeholder) — **아직 안 함**
+- [ ] 회원가입/로그인, 인앱결제 — **아직 안 함**
+
+### 코드 구조 참고
+```
+app/lib/
+  main.dart              # 루트 위젯, 하단 4탭 네비게이션
+  models/                # Question, ExamSubject, MasteryRecord 등 데이터 모델
+  data/sample_questions.dart  # 화면 확인용 샘플 데이터 (실제 데이터로 교체 예정)
+  screens/               # home(과목선택), quiz(문제풀이), wrong_note, compiled_note, stats
+```
+실행 확인: `cd app && flutter run -d chrome`
 
 ## 여러 PC에서 이어작업하기
 1. `git clone https://github.com/chj927il-arch/gamyeong-exam.git`
