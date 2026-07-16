@@ -43,8 +43,15 @@ app/lib/
   models/                # Question, ExamSubject, MasteryRecord 등 데이터 모델
   data/sample_questions.dart  # 화면 확인용 샘플 데이터 (실제 데이터로 교체 예정)
   screens/               # home(과목선택), quiz(문제풀이), wrong_note, compiled_note, stats
+  theme/                 # app_theme.dart(색상·폰트·컴포넌트 테마), subject_style.dart(과목별 아이콘/색)
+  widgets/empty_state.dart  # 오답노트·단권화·통계 빈 상태 공용 위젯
 ```
-실행 확인: `cd app && flutter run -d chrome`
+실행 확인: `cd app && flutter run -d chrome` 또는 `flutter run -d web-server --web-port=8080` 후 브라우저에서 `http://localhost:8080`
+
+### 디자인 방향
+- 폰트: Google Fonts `Noto Sans KR` (한글 가독성, 추후 Pretendard로 교체 가능)
+- 톤: "가벼운 학습 앱"보다는 "신뢰감 있는 자격증 준비 앱" — 전문적이되 진행률·스트릭 같은 동기부여 요소로 친근함 부여
+- 홈 화면 상단 그라데이션 헤더(오늘 목표·스트릭)와 과목별 진행률은 현재 목업 값(`home_screen.dart`의 `_mockProgress` 등) — 실제 학습 데이터 연동 필요
 
 ## 여러 PC에서 이어작업하기
 1. `git clone https://github.com/chj927il-arch/gamyeong-exam.git`
