@@ -16,7 +16,7 @@ class GamyeongExamApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '가맹거래사 문제은행',
+      title: '가맹거래사 1차 시험대비',
       theme: AppTheme.light(),
       home: const RootScreen(),
       // 웹/데스크톱 브라우저처럼 화면이 넓을 때도 폰 앱처럼 보이도록 폭 제한
@@ -58,7 +58,7 @@ class _RootScreenState extends State<RootScreen> {
     return Scaffold(
       appBar: AppBar(
         title: _tabIndex == 0
-            ? const Text('가맹거래사 문제은행', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 26))
+            ? const Text('가맹거래사 1차 시험대비', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 22))
             : Text(_titles[_tabIndex]),
         centerTitle: _tabIndex == 0,
       ),

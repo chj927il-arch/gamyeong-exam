@@ -16,12 +16,6 @@ class StudyStats {
   static const int totalMinutes = 1260; // 총 누적 학습 시간(분)
   static const double totalAccuracy = 0.78;
 
-  /// 합격생 평균 대비 비교 지표 (레퍼런스: "나 vs 상위권" 비교 카드용 목업)
-  static const double peerAccuracy = 0.91;
-  static const String peerLabel = '합격생 평균';
-  static const int peerWeeklyMinutes = 320;
-  static const int myWeeklyMinutes = 200;
-
   /// 최근 7일 학습 시간(분) — 오늘 포함, 과거 → 오늘 순서
   static const List<DailyActivity> weeklyActivity = [
     DailyActivity(label: '월', minutes: 18),
