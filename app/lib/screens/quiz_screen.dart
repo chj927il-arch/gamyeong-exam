@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../data/sample_questions.dart';
+import '../data/user_progress.dart';
 import '../models/question.dart';
 import '../theme/app_theme.dart';
 import '../theme/subject_style.dart';
 import '../widgets/app_background.dart';
+import '../widgets/highlighted_text.dart';
 
 const _optionLabels = ['A', 'B', 'C', 'D', 'E'];
 
@@ -37,6 +39,10 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _select(int index) {
     if (_answered) return;
+    final question = _questions[_current];
+    if (index != question.correctIndex) {
+      UserProgress.instance.markWrong(question.id);
+    }
     setState(() {
       _selectedIndex = index;
       _answered = true;
@@ -398,9 +404,25 @@ class _FeedbackPanel extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Text(
-                      isCorrect ? '정답입니다' : '아쉬워요, 오답입니다',
-                      style: TextStyle(color: resultColor, fontWeight: FontWeight.w800, fontSize: 17),
+                    Expanded(
+                      child: Text(
+                        isCorrect ? '정답입니다' : '아쉬워요, 오답입니다',
+                        style: TextStyle(color: resultColor, fontWeight: FontWeight.w800, fontSize: 17),
+                      ),
+                    ),
+                    ListenableBuilder(
+                      listenable: UserProgress.instance,
+                      builder: (context, _) {
+                        final compiled = UserProgress.instance.isCompiled(question.id);
+                        return IconButton(
+                          onPressed: () => UserProgress.instance.toggleCompiled(question.id),
+                          icon: Icon(
+                            compiled ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                            color: compiled ? AppColors.primary : AppColors.textMuted,
+                          ),
+                          tooltip: '단권화 노트에 저장',
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -410,9 +432,9 @@ class _FeedbackPanel extends StatelessWidget {
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.textMuted, letterSpacing: 0.4),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  question.summaryExplanation,
-                  textAlign: TextAlign.start,
+                HighlightedText(
+                  text: question.summaryExplanation,
+                  phrases: question.highlightPhrases,
                   style: const TextStyle(fontSize: 15.5, height: 1.65, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
                 ),
                 if (question.keyPoints.isNotEmpty) ...[

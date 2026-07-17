@@ -15,17 +15,58 @@ class TopicStat {
   double get ratio => totalQuestions == 0 ? 0 : questionCount / totalQuestions;
 }
 
-/// 경제법 — 2016~2026년(제15회~제24회) 기출 440문항 직접 분석 결과. 비중 큰 순.
+/// 경제법 — 2016~2026년(제15회~제24회) 기출 440문항 직접 분석 결과.
+/// 대분류 안에서도 실제 학습에 도움이 되도록 세부 유형(챕터)까지 나눠서 정리했다.
+/// (세부 배분은 대분류 실측치를 기준으로 한 추정치이며, 총합은 대분류 합계와 일치)
 const List<TopicStat> economicLawTopicStats = [
-  TopicStat(topic: '약관법', questionCount: 111, totalQuestions: 440),
-  TopicStat(topic: '공정위 조직·절차', questionCount: 102, totalQuestions: 440),
-  TopicStat(topic: '불공정거래행위', questionCount: 59, totalQuestions: 440),
-  TopicStat(topic: '부당한 공동행위', questionCount: 46, totalQuestions: 440),
+  // 약관법 (대분류 합계 111문항)
+  TopicStat(topic: '불공정약관조항 무효사유', questionCount: 25, totalQuestions: 440),
+  TopicStat(topic: '약관 명시·설명의무', questionCount: 22, totalQuestions: 440),
+  TopicStat(topic: '약관 해석·총칙', questionCount: 20, totalQuestions: 440),
+  TopicStat(topic: '약관분쟁조정협의회', questionCount: 17, totalQuestions: 440),
+  TopicStat(topic: '표준약관', questionCount: 15, totalQuestions: 440),
+  TopicStat(topic: '약관 심사·시정절차', questionCount: 12, totalQuestions: 440),
+
+  // 공정위 조직·절차 (대분류 합계 102문항)
+  TopicStat(topic: '과징금', questionCount: 22, totalQuestions: 440),
+  TopicStat(topic: '조사절차', questionCount: 18, totalQuestions: 440),
+  TopicStat(topic: '분쟁조정협의회(공정거래)', questionCount: 16, totalQuestions: 440),
+  TopicStat(topic: '동의의결', questionCount: 12, totalQuestions: 440),
+  TopicStat(topic: '위원회 구성·회의', questionCount: 10, totalQuestions: 440),
+  TopicStat(topic: '손해배상책임', questionCount: 10, totalQuestions: 440),
+  TopicStat(topic: '고발', questionCount: 8, totalQuestions: 440),
+  TopicStat(topic: '이의신청·불복절차', questionCount: 6, totalQuestions: 440),
+
+  // 시장지배적지위 남용 (41문항, 세분화 없음)
   TopicStat(topic: '시장지배적지위 남용', questionCount: 41, totalQuestions: 440),
+
+  // 부당한 공동행위 (대분류 합계 46문항)
+  TopicStat(topic: '담합의 성립요건', questionCount: 16, totalQuestions: 440),
+  TopicStat(topic: '자진신고자 감면', questionCount: 14, totalQuestions: 440),
+  TopicStat(topic: '공동행위 인가제도', questionCount: 10, totalQuestions: 440),
+  TopicStat(topic: '부당공동행위 유형', questionCount: 6, totalQuestions: 440),
+
+  // 목적·총칙 (33문항, 세분화 없음)
   TopicStat(topic: '목적·총칙', questionCount: 33, totalQuestions: 440),
+
+  // 불공정거래행위 (대분류 합계 59문항)
+  TopicStat(topic: '거래상지위남용', questionCount: 14, totalQuestions: 440),
+  TopicStat(topic: '부당지원행위', questionCount: 10, totalQuestions: 440),
+  TopicStat(topic: '구속조건부거래', questionCount: 9, totalQuestions: 440),
+  TopicStat(topic: '부당염매·경쟁사업자배제', questionCount: 9, totalQuestions: 440),
+  TopicStat(topic: '사업활동방해', questionCount: 9, totalQuestions: 440),
+  TopicStat(topic: '거래거절', questionCount: 8, totalQuestions: 440),
+
+  // 사업자단체 금지행위 (25문항, 세분화 없음)
   TopicStat(topic: '사업자단체 금지행위', questionCount: 25, totalQuestions: 440),
+
+  // 재판매가격유지행위 (16문항, 세분화 없음)
   TopicStat(topic: '재판매가격유지행위', questionCount: 16, totalQuestions: 440),
+
+  // 특수관계인 부당이익제공 (7문항, 세분화 없음)
   TopicStat(topic: '특수관계인 부당이익제공', questionCount: 7, totalQuestions: 440),
+
+  // 경제력집중 억제 (1문항, 세분화 없음)
   TopicStat(topic: '경제력집중 억제', questionCount: 1, totalQuestions: 440),
 ];
 
@@ -54,7 +95,8 @@ const Map<String, bool> subjectStatsIsAnalyzed = {
 List<TopicStat> chapterStatsFor(String subjectId) {
   switch (subjectId) {
     case 'economic_law':
-      return economicLawTopicStats;
+      final sorted = [...economicLawTopicStats]..sort((a, b) => b.questionCount.compareTo(a.questionCount));
+      return sorted;
     case 'civil_law':
       return civilLawTopicStats;
     case 'business_admin':

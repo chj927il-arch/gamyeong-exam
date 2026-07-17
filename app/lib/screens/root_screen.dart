@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/app_background.dart';
 import 'compiled_note_screen.dart';
 import 'home_screen.dart';
-import 'stats_screen.dart';
 import 'wrong_note_screen.dart';
 
 class RootScreen extends StatefulWidget {
@@ -15,12 +14,11 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   int _tabIndex = 0;
 
-  static const _titles = ['학습', '오답노트', '단권화', '통계'];
+  static const _titles = ['학습', '오답노트', '단권화'];
   static const _tabs = [
     HomeScreen(),
     WrongNoteScreen(),
     CompiledNoteScreen(),
-    StatsScreen(),
   ];
 
   @override
@@ -51,11 +49,6 @@ class _RootScreenState extends State<RootScreen> {
             icon: Icon(Icons.bookmark_outline),
             selectedIcon: Icon(Icons.bookmark),
             label: '단권화',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
-            selectedIcon: Icon(Icons.bar_chart),
-            label: '통계',
           ),
         ],
       ),

@@ -10,6 +10,9 @@ class Question {
   /// 핵심만 요약한 해설 (길게 쓰지 않음)
   final String summaryExplanation;
 
+  /// summaryExplanation 중 하이라이트 처리할 핵심 문구(정확히 일치하는 부분 문자열)
+  final List<String> highlightPhrases;
+
   /// 출제의도·핵심 개념·최근 이슈 태그
   final List<String> keyPoints;
 
@@ -29,6 +32,7 @@ class Question {
     required this.choices,
     required this.correctIndex,
     required this.summaryExplanation,
+    this.highlightPhrases = const [],
     this.keyPoints = const [],
     this.sourceYear,
     this.originQuestionId,

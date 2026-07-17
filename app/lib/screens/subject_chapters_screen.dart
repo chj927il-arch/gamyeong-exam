@@ -5,6 +5,7 @@ import '../theme/subject_style.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
 import 'quiz_screen.dart';
+import 'stats_screen.dart';
 
 /// 과목 진입 시 보여주는 챕터(유형) 목록 화면.
 /// 출제 비중이 큰 순서대로 챕터가 정렬되어, 비중 높은 유형부터 집중 공략할 수 있게 한다.
@@ -21,7 +22,21 @@ class SubjectChaptersScreen extends StatelessWidget {
     final isAnalyzed = subjectStatsIsAnalyzed[subjectId] ?? false;
 
     return Scaffold(
-      appBar: AppBar(title: Text(subjectName), centerTitle: false),
+      appBar: AppBar(
+        title: Text(subjectName),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => StatsScreen(subjectId: subjectId, subjectName: subjectName),
+              ),
+            ),
+            icon: const Icon(Icons.bar_chart_rounded),
+            tooltip: '출제 통계',
+          ),
+        ],
+      ),
       body: AppBackground(
         child: SafeArea(
           child: ListView(
