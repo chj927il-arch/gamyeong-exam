@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_background.dart';
 import '../widgets/marquee_text.dart';
-import 'compiled_note_screen.dart';
 import 'home_screen.dart';
+import 'learning_report_screen.dart';
 import 'wrong_note_screen.dart';
 
 const double _kEncourageBarHeight = 24;
@@ -18,12 +18,23 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   int _tabIndex = 0;
 
-  static const _titles = ['학습', '오답노트', '단권화'];
-  static const _tabs = [
+  static const _titles = ['홈', '오답노트', '학습리포트'];
+
+  final List<GlobalKey<NavigatorState>> _navKeys =
+      List.generate(3, (_) => GlobalKey<NavigatorState>());
+
+  static const _tabScreens = [
     HomeScreen(),
     WrongNoteScreen(),
-    CompiledNoteScreen(),
+    LearningReportScreen(),
   ];
+
+  Widget _buildTabNavigator(int index) {
+    return Navigator(
+      key: _navKeys[index],
+      onGenerateRoute: (settings) => MaterialPageRoute(builder: (_) => _tabScreens[index]),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +70,22 @@ class _RootScreenState extends State<RootScreen> {
           ),
         ),
       ),
-      body: AppBackground(child: SafeArea(child: _tabs[_tabIndex])),
+      body: AppBackground(
+        child: SafeArea(
+          child: IndexedStack(
+            index: _tabIndex,
+            children: List.generate(3, _buildTabNavigator),
+          ),
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tabIndex,
         onDestinationSelected: (i) => setState(() => _tabIndex = i),
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.school_outlined),
-            selectedIcon: Icon(Icons.school),
-            label: '학습',
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: '홈',
           ),
           NavigationDestination(
             icon: Icon(Icons.error_outline),
@@ -75,9 +93,9 @@ class _RootScreenState extends State<RootScreen> {
             label: '오답노트',
           ),
           NavigationDestination(
-            icon: Icon(Icons.bookmark_outline),
-            selectedIcon: Icon(Icons.bookmark),
-            label: '단권화',
+            icon: Icon(Icons.insights_outlined),
+            selectedIcon: Icon(Icons.insights),
+            label: '학습리포트',
           ),
         ],
       ),
@@ -85,7 +103,7 @@ class _RootScreenState extends State<RootScreen> {
   }
 }
 
-/// 상단 타이틀 위에 표시되는 얇은 응원 문구 바 — 텍스트 높이에 딱 맞는 슬림 바.
+/// 상단 타이틀 위에 표시되는 얇은 응원 문구 바 — 증권 시세바처럼 계속 흘러간다.
 class _EncourageBar extends StatelessWidget {
   const _EncourageBar();
 

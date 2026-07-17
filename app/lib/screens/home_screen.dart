@@ -5,8 +5,9 @@ import '../theme/app_theme.dart';
 import '../theme/subject_style.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/launch_banner.dart';
+import '../widgets/progress_ring.dart';
 import '../widgets/rolling_banner.dart';
-import 'quiz_screen.dart';
+import '../widgets/weak_chapter_row.dart';
 import 'subject_chapters_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -19,34 +20,53 @@ class HomeScreen extends StatelessWidget {
         const _SubjectMenu(),
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            padding: const EdgeInsets.only(top: 16, bottom: 24),
             children: [
+              // 배너는 좌우 여백 없이 화면 폭 전체를 채운다.
               const LaunchBanner(),
               const SizedBox(height: 12),
-              const RollingBanner(),
-              const SizedBox(height: 20),
-              const _TodayHeader(),
-              const SizedBox(height: 16),
-              const _StudyReportCard(),
-              const SizedBox(height: 16),
-              const _StatsGrid(),
-              const SizedBox(height: 16),
-              const _WeeklyActivityCard(),
-              const SizedBox(height: 28),
-              const Text(
-                '과목별 학습 현황',
-                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
-              ),
-              const SizedBox(height: 2),
-              const Text(
-                '탭해서 챕터별로 집중공략해보세요',
-                style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: 14),
-              ...examSubjects.map(
-                (subject) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _SubjectCard(subject: subject),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    const RollingBanner(),
+                    const SizedBox(height: 20),
+                    const _TodayHeader(),
+                    const SizedBox(height: 16),
+                    const _StudyReportCard(),
+                    const SizedBox(height: 16),
+                    const _StatsGrid(),
+                    const SizedBox(height: 16),
+                    const _WeeklyActivityCard(),
+                    const SizedBox(height: 28),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                '과목별 학습 현황',
+                                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                '탭해서 챕터별로\n집중공략해보세요',
+                                style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary, height: 1.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    ...examSubjects.map(
+                      (subject) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _SubjectCard(subject: subject),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -193,7 +213,7 @@ class _StudyReportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -208,90 +228,13 @@ class _StudyReportCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ...List.generate(weakChapters.length, (i) {
-            final w = weakChapters[i];
-            final style = subjectStyleOf(w.subjectId);
             final isLast = i == weakChapters.length - 1;
-            return _WeakChapterRow(chapter: w, color: style.color, showDivider: !isLast);
+            return Padding(
+              padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
+              child: WeakChapterRow(chapter: weakChapters[i]),
+            );
           }),
         ],
-      ),
-    );
-  }
-}
-
-class _WeakChapterRow extends StatelessWidget {
-  final WeakChapter chapter;
-  final Color color;
-  final bool showDivider;
-
-  const _WeakChapterRow({required this.chapter, required this.color, required this.showDivider});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => QuizScreen(
-            subjectId: chapter.subjectId,
-            subjectName: chapter.subjectName,
-            category: chapter.chapterName,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-                      children: [
-                        TextSpan(text: '${chapter.subjectName} · '),
-                        TextSpan(text: chapter.chapterName, style: TextStyle(color: color)),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.wrong.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    '정답률 ${(chapter.accuracy * 100).round()}%',
-                    style: const TextStyle(color: AppColors.wrong, fontWeight: FontWeight.w800, fontSize: 13.5),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 18),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                chapter.advice,
-                style: const TextStyle(fontSize: 14, color: AppColors.textSecondary, fontWeight: FontWeight.w400, height: 1.45),
-              ),
-            ),
-            if (showDivider) ...[
-              const SizedBox(height: 10),
-              const Divider(height: 1),
-            ],
-          ],
-        ),
       ),
     );
   }
@@ -468,7 +411,7 @@ class _SubjectCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _ProgressRing(progress: progress, color: style.color),
+                ProgressRing(progress: progress, color: style.color),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -530,49 +473,6 @@ class _SubjectCard extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// 과목 학습 진행률을 보여주는 작은 링(도넛) 게이지.
-class _ProgressRing extends StatelessWidget {
-  final double progress;
-  final Color color;
-  const _ProgressRing({required this.progress, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 56,
-      height: 56,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox(
-            width: 56,
-            height: 56,
-            child: CircularProgressIndicator(
-              value: 1,
-              strokeWidth: 6,
-              valueColor: AlwaysStoppedAnimation(color.withValues(alpha: 0.14)),
-            ),
-          ),
-          SizedBox(
-            width: 56,
-            height: 56,
-            child: CircularProgressIndicator(
-              value: progress,
-              strokeWidth: 6,
-              strokeCap: StrokeCap.round,
-              valueColor: AlwaysStoppedAnimation(color),
-            ),
-          ),
-          Text(
-            '${(progress * 100).round()}%',
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: color),
-          ),
-        ],
       ),
     );
   }

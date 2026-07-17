@@ -1,46 +1,79 @@
 import 'package:flutter/material.dart';
 import '../data/sample_questions.dart';
+import '../data/study_stats.dart';
 import '../data/user_progress.dart';
 import '../models/question.dart';
 import '../theme/app_theme.dart';
 import '../theme/subject_style.dart';
-import '../widgets/empty_state.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/weak_chapter_row.dart';
 
-class CompiledNoteScreen extends StatelessWidget {
-  const CompiledNoteScreen({super.key});
+/// 학습 리포트 탭 — 과목별 취약 챕터 분석 + 저장한 단권화 노트를 한 화면에서 보여준다.
+class LearningReportScreen extends StatelessWidget {
+  const LearningReportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: UserProgress.instance,
-      builder: (context, _) {
-        final ids = UserProgress.instance.compiledQuestionIds;
-        final questions = sampleQuestions.where((q) => ids.contains(q.id)).toList();
-
-        if (questions.isEmpty) {
-          return const EmptyState(
-            icon: Icons.bookmark_outline,
-            title: '단권화 노트가 비어있어요',
-            description: '문제 풀이 중 마음에 든 핵심 요약 해설을 저장하면\n나만의 단권화 노트로 모아볼 수 있어요.',
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      children: [
+        const Text(
+          '학습 리포트',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          '정답률이 낮은 챕터부터 먼저 보강해보세요',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 16),
+        ...List.generate(weakChapters.length, (i) {
+          final isLast = i == weakChapters.length - 1;
+          return Padding(
+            padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
+            child: WeakChapterRow(chapter: weakChapters[i]),
           );
-        }
+        }),
+        const SizedBox(height: 28),
+        const Text(
+          '저장한 노트',
+          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+        ),
+        const SizedBox(height: 2),
+        const Text(
+          '문제 풀이 중 북마크한 핵심 해설 모음',
+          style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 14),
+        ListenableBuilder(
+          listenable: UserProgress.instance,
+          builder: (context, _) {
+            final ids = UserProgress.instance.compiledQuestionIds;
+            final questions = sampleQuestions.where((q) => ids.contains(q.id)).toList();
 
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          itemCount: questions.length + 1,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
-          itemBuilder: (context, i) {
-            if (i == 0) {
-              return Text(
-                '저장한 노트 ${questions.length}개',
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textSecondary),
+            if (questions.isEmpty) {
+              return Container(
+                padding: const EdgeInsets.symmetric(vertical: 28),
+                alignment: Alignment.center,
+                child: const Text(
+                  '아직 저장한 노트가 없어요.\n문제 해설 화면의 북마크 버튼으로 저장해보세요.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13.5, height: 1.5),
+                ),
               );
             }
-            return _CompiledCard(question: questions[i - 1]);
+
+            return Column(
+              children: questions
+                  .map((q) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _CompiledCard(question: q),
+                      ))
+                  .toList(),
+            );
           },
-        );
-      },
+        ),
+      ],
     );
   }
 }

@@ -6,14 +6,13 @@ class LaunchBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(18),
-      child: AspectRatio(
-        aspectRatio: 1774 / 887,
-        child: Image.asset(
-          'assets/images/launch_banner.png',
-          fit: BoxFit.cover,
-        ),
+    // 좌우 여백 없이 화면 폭 전체를 채우는 풀블리드 배너 — 라운드 처리하지 않는다.
+    return AspectRatio(
+      aspectRatio: 1774 / 887,
+      child: Image.asset(
+        'assets/images/launch_banner.png',
+        fit: BoxFit.cover,
+        width: double.infinity,
       ),
     );
   }
