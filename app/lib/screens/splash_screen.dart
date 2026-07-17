@@ -117,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     ),
                     const Spacer(flex: 3),
                     const Text(
-                      '가맹거래사',
+                      '스터디박스',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 52,
@@ -131,15 +131,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       children: [
                         Container(width: 28, height: 4, color: AppColors.accentGold),
                         const SizedBox(width: 10),
-                        const Text(
-                          '1차 시험대비',
-                          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: -0.3),
+                        const Expanded(
+                          child: Text(
+                            '가맹거래사 1차 시험대비',
+                            style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w700, letterSpacing: -0.3),
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 18),
                     Text(
-                      '가장 스마트하게, 가장 콤팩트하게.',
+                      '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.82), fontSize: 15.5, fontWeight: FontWeight.w600),
                     ),
                     const Spacer(flex: 2),
@@ -159,7 +161,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'GAMYEONG EXAM PREP',
+                          'STUDY BOX',
                           style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4),
                         ),
                         SizedBox(

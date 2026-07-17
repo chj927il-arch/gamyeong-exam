@@ -12,7 +12,7 @@ class GamyeongExamApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '가맹거래사 1차 시험대비',
+      title: '스터디박스',
       theme: AppTheme.light(),
       home: const SplashScreen(),
       // 웹/데스크톱 브라우저처럼 화면이 넓을 때도 폰 앱처럼 보이도록 폭 제한

@@ -9,7 +9,23 @@ import 'mypage_screen.dart';
 import 'study_screen.dart';
 
 const double _kEncourageBarHeight = 24;
+const double _kTopNavHeight = 60;
 const int _kTabCount = 5;
+
+class _NavItem {
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+  const _NavItem(this.icon, this.selectedIcon, this.label);
+}
+
+const _navItems = [
+  _NavItem(Icons.home_outlined, Icons.home, '홈'),
+  _NavItem(Icons.info_outline_rounded, Icons.info_rounded, '시험소개'),
+  _NavItem(Icons.menu_book_outlined, Icons.menu_book_rounded, '시험과목'),
+  _NavItem(Icons.edit_note_outlined, Icons.edit_note_rounded, '학습하기'),
+  _NavItem(Icons.person_outline_rounded, Icons.person_rounded, '마이페이지'),
+];
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -55,12 +71,13 @@ class _RootScreenState extends State<RootScreen> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(_kEncourageBarHeight + titleBarHeight),
+        preferredSize: Size.fromHeight(_kTopNavHeight + _kEncourageBarHeight + titleBarHeight),
         child: SafeArea(
           bottom: false,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              _TopNavBar(selectedIndex: _tabIndex, onSelected: _onDestinationSelected),
               const _EncourageBar(),
               AppBar(
                 toolbarHeight: titleBarHeight,
@@ -68,10 +85,10 @@ class _RootScreenState extends State<RootScreen> {
                     ? const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('가맹거래사 1차 시험대비', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25)),
+                          Text('스터디박스', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25)),
                           SizedBox(height: 3),
                           Text(
-                            '가장 스마트하게, 가장 콤팩트하게.',
+                            '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
                             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
                           ),
                         ],
@@ -91,36 +108,62 @@ class _RootScreenState extends State<RootScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _tabIndex,
-        onDestinationSelected: _onDestinationSelected,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: '홈',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.info_outline_rounded),
-            selectedIcon: Icon(Icons.info_rounded),
-            label: '시험소개',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.menu_book_outlined),
-            selectedIcon: Icon(Icons.menu_book_rounded),
-            label: '시험과목',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.edit_note_outlined),
-            selectedIcon: Icon(Icons.edit_note_rounded),
-            label: '학습하기',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline_rounded),
-            selectedIcon: Icon(Icons.person_rounded),
-            label: '마이페이지',
-          ),
-        ],
+    );
+  }
+}
+
+/// 상단 탭 메뉴 — 기존 하단 네비게이션을 상단 배너 위로 옮긴 형태.
+class _TopNavBar extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+  const _TopNavBar({required this.selectedIndex, required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: _kTopNavHeight,
+      decoration: BoxDecoration(
+        color: AppColors.bgBase,
+        border: Border(bottom: BorderSide(color: AppColors.glassBorder.withValues(alpha: 0.8))),
+      ),
+      child: Row(
+        children: List.generate(_navItems.length, (i) {
+          final item = _navItems[i];
+          final selected = i == selectedIndex;
+          final color = selected ? AppColors.primary : AppColors.textMuted;
+          return Expanded(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => onSelected(i),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(selected ? item.selectedIcon : item.icon, size: 21, color: color),
+                    const SizedBox(height: 3),
+                    Text(
+                      item.label,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                        color: color,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      height: 2.5,
+                      width: 28,
+                      decoration: BoxDecoration(
+                        color: selected ? AppColors.primary : Colors.transparent,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

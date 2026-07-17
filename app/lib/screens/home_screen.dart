@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../data/study_stats.dart';
 import '../theme/app_theme.dart';
 import '../widgets/launch_banner.dart';
 import '../widgets/rolling_banner.dart';
+import 'faq_screen.dart';
+import 'notice_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,7 +22,7 @@ class HomeScreen extends StatelessWidget {
             children: const [
               RollingBanner(),
               SizedBox(height: 20),
-              _TodayHeader(),
+              _QuickMenuRow(),
             ],
           ),
         ),
@@ -30,85 +31,76 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _TodayHeader extends StatelessWidget {
-  const _TodayHeader();
+class _QuickMenuRow extends StatelessWidget {
+  const _QuickMenuRow();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.ink, Color(0xFF2A2D35)],
+    return Row(
+      children: [
+        Expanded(
+          child: _QuickMenuCard(
+            icon: Icons.campaign_outlined,
+            label: '공지사항',
+            color: AppColors.primary,
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoticeScreen())),
+          ),
         ),
-        boxShadow: [
-          BoxShadow(color: AppColors.ink.withValues(alpha: 0.22), blurRadius: 22, offset: const Offset(0, 10)),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Expanded(
-                child: Text(
-                  '오늘도 한 문제 더\n풀어볼까요?',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 21,
-                    fontWeight: FontWeight.w800,
-                    height: 1.3,
-                  ),
-                ),
-              ),
-              const _StreakBadge(days: StudyStats.streakDays),
-            ],
+        const SizedBox(width: 12),
+        Expanded(
+          child: _QuickMenuCard(
+            icon: Icons.help_outline_rounded,
+            label: 'FAQ',
+            color: AppColors.accentGold,
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FaqScreen())),
           ),
-          const SizedBox(height: 20),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: StudyStats.todaySolved / StudyStats.todayGoal,
-              minHeight: 9,
-              backgroundColor: Colors.white.withValues(alpha: 0.14),
-              valueColor: const AlwaysStoppedAnimation(AppColors.accentGold),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            '오늘 목표 ${StudyStats.todaySolved} / ${StudyStats.todayGoal}문제 · ${StudyStats.todayMinutes}분 학습',
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.75), fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-class _StreakBadge extends StatelessWidget {
-  final int days;
-  const _StreakBadge({required this.days});
+class _QuickMenuCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+  const _QuickMenuCard({required this.icon, required this.label, required this.color, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.22),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('🔥', style: TextStyle(fontSize: 15)),
-          const SizedBox(width: 4),
-          Text('$days일', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.18)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.035), blurRadius: 14, offset: const Offset(0, 6)),
         ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            child: Column(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+                  child: Icon(icon, size: 21, color: color),
+                ),
+                const SizedBox(height: 8),
+                Text(label, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

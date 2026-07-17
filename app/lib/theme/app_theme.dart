@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// 화이트 배경 + 블랙 텍스트 + 네이비 키컬러의 신뢰감 있는 라이트 테마.
 class AppColors {
@@ -34,20 +35,16 @@ class AppColors {
 class AppTheme {
   AppTheme._();
 
-  static const fontFamily = 'Pretendard';
-
   static ThemeData light() {
     final base = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      fontFamily: fontFamily,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
         brightness: Brightness.light,
       ),
     );
-    final textTheme = base.textTheme.apply(
-      fontFamily: fontFamily,
+    final textTheme = GoogleFonts.gothicA1TextTheme(base.textTheme).apply(
       bodyColor: AppColors.textPrimary,
       displayColor: AppColors.textPrimary,
     );
