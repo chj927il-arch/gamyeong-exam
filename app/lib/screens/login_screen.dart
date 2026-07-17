@@ -11,12 +11,16 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+const String _kAdminId = 'admin';
+const String _kAdminPassword = 'admin1234!';
+
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _idController = TextEditingController();
   final _pwController = TextEditingController();
   bool _obscure = true;
   bool _saveId = false;
+  String? _loginError;
 
   @override
   void dispose() {
@@ -27,6 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() {
     if (!_formKey.currentState!.validate()) return;
+    if (_idController.text.trim() != _kAdminId || _pwController.text != _kAdminPassword) {
+      setState(() => _loginError = '아이디 또는 비밀번호가 올바르지 않습니다.');
+      return;
+    }
+    setState(() => _loginError = null);
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const RootScreen()),
       (route) => false,
@@ -95,6 +104,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: (v) => (v == null || v.isEmpty) ? '비밀번호를 입력해주세요' : null,
                     onFieldSubmitted: (_) => _login(),
                   ),
+                  if (_loginError != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      _loginError!,
+                      style: const TextStyle(color: AppColors.wrong, fontSize: 12.5, fontWeight: FontWeight.w600),
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   Row(
                     children: [
