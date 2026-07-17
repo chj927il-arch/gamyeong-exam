@@ -19,12 +19,12 @@ class HomeScreen extends StatelessWidget {
         // 배너는 좌우 여백 없이 화면 폭 전체를 채운다.
         const LaunchBanner(),
         const SizedBox(height: 12),
+        const _DailyOxBanner(),
+        const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              const _DailyOxBanner(),
-              const SizedBox(height: 14),
               const RollingBanner(),
               const SizedBox(height: 24),
               _BoardSection(
@@ -60,63 +60,84 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+/// 데일리 OX 퀴즈 배너 — 1440x400 비율의 전체 폭 그래픽 배너.
 class _DailyOxBanner extends StatelessWidget {
   const _DailyOxBanner();
 
   @override
   Widget build(BuildContext context) {
     final today = dailyOxQuizzes.first;
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.ink, Color(0xFF232733)],
+    return AspectRatio(
+      aspectRatio: 1440 / 400,
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.ink, Color(0xFF232733)],
+          ),
         ),
-        boxShadow: [
-          BoxShadow(color: AppColors.ink.withValues(alpha: 0.2), blurRadius: 18, offset: const Offset(0, 8)),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(18),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DailyOxListScreen())),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-            child: Row(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DailyOxListScreen())),
+            child: Stack(
               children: [
-                Container(
-                  width: 46,
-                  height: 46,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.accentGold.withValues(alpha: 0.16),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.accentGold.withValues(alpha: 0.4)),
+                // 우측 대형 워터마크 O/X 그래픽
+                Positioned(
+                  right: -18,
+                  top: 0,
+                  bottom: 0,
+                  child: Center(
+                    child: Text(
+                      'O X',
+                      style: TextStyle(
+                        color: AppColors.accentGold.withValues(alpha: 0.10),
+                        fontSize: 150,
+                        fontWeight: FontWeight.w900,
+                        height: 1,
+                        letterSpacing: 4,
+                      ),
+                    ),
                   ),
-                  child: const Text('OX', style: TextStyle(color: AppColors.accentGold, fontWeight: FontWeight.w900, fontSize: 15)),
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  child: Row(
                     children: [
-                      Text(
-                        '데일리 OX 퀴즈 · ${today.date}',
-                        style: TextStyle(color: AppColors.accentGold.withValues(alpha: 0.9), fontSize: 11.5, fontWeight: FontWeight.w700),
+                      Container(
+                        width: 56,
+                        height: 56,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: AppColors.accentGold.withValues(alpha: 0.16),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.accentGold.withValues(alpha: 0.4)),
+                        ),
+                        child: const Text('OX', style: TextStyle(color: AppColors.accentGold, fontWeight: FontWeight.w900, fontSize: 18)),
                       ),
-                      const SizedBox(height: 3),
-                      const Text(
-                        '오늘의 과목별 O/X 1문제 풀어보기',
-                        style: TextStyle(color: Colors.white, fontSize: 15.5, fontWeight: FontWeight.w800),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '데일리 OX 퀴즈 · ${today.date}',
+                              style: TextStyle(color: AppColors.accentGold.withValues(alpha: 0.9), fontSize: 12.5, fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              '오늘의 과목별\nO/X 1문제 풀어보기',
+                              style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w800, height: 1.25),
+                            ),
+                          ],
+                        ),
                       ),
+                      const Icon(Icons.chevron_right_rounded, color: AppColors.accentGold, size: 26),
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded, color: AppColors.accentGold, size: 22),
               ],
             ),
           ),
