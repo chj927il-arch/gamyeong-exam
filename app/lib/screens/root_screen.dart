@@ -194,7 +194,7 @@ class _EncourageBar extends StatelessWidget {
       height: _kEncourageBarHeight,
       color: AppColors.primary,
       child: const MarqueeText(
-        text: '여러분의 합격을 응원합니다.',
+        text: '가맹거래사 합격을 응원합니다.',
         style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
         height: _kEncourageBarHeight,
       ),

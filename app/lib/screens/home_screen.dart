@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../data/board_data.dart';
+import '../data/ox_quiz_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/launch_banner.dart';
 import '../widgets/rolling_banner.dart';
+import 'daily_ox_list_screen.dart';
 import 'faq_screen.dart';
 import 'notice_screen.dart';
 
@@ -21,6 +23,8 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
+              const _DailyOxBanner(),
+              const SizedBox(height: 14),
               const RollingBanner(),
               const SizedBox(height: 24),
               _BoardSection(
@@ -52,6 +56,65 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DailyOxBanner extends StatelessWidget {
+  const _DailyOxBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final today = dailyOxQuizzes.first;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.accentPurple, Color(0xFFB05CF0)],
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DailyOxListScreen())),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), shape: BoxShape.circle),
+                  child: const Text('OX', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15)),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '데일리 OX 퀴즈 · ${today.date}',
+                        style: const TextStyle(color: Colors.white70, fontSize: 11.5, fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 3),
+                      const Text(
+                        '오늘의 과목별 O/X 1문제 풀어보기',
+                        style: TextStyle(color: Colors.white, fontSize: 15.5, fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded, color: Colors.white, size: 22),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
