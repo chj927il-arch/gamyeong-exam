@@ -21,19 +21,19 @@ const _defaultBanners = [
     title: '이번 주 신규\n유사문제 업데이트',
     subtitle: '출제 비중 1위 약관법\n문제가 추가됐어요',
     icon: Icons.auto_awesome_outlined,
-    gradient: [Color(0xFF1B3358), Color(0xFF2E4E7C)],
+    gradient: [Color(0xFFE8562F), Color(0xFFF4854A)],
   ),
   BannerItem(
     title: '오늘의 추천 챕터',
     subtitle: '공정위 조직·절차, 최근 10년간\n두 번째로 많이 출제',
     icon: Icons.local_fire_department_outlined,
-    gradient: [Color(0xFF2B6777), Color(0xFF3E8595)],
+    gradient: [Color(0xFF0E8F6F), Color(0xFF2CB491)],
   ),
   BannerItem(
     title: '프리미엄 전환하고\n전 과목 무제한 풀기',
     subtitle: '경제법·민법·경영학\n전 챕터 잠금 해제',
     icon: Icons.workspace_premium_outlined,
-    gradient: [Color(0xFFC98A2B), Color(0xFFDBA53F)],
+    gradient: [Color(0xFF3E4FA8), Color(0xFF6C7CD6)],
   ),
 ];
 

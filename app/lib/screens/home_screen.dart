@@ -26,6 +26,7 @@ class HomeScreen extends StatelessWidget {
               _BoardSection(
                 title: '공지사항',
                 icon: Icons.campaign_outlined,
+                headerColor: AppColors.primary,
                 onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoticeScreen())),
                 rows: notices
                     .take(3)
@@ -40,6 +41,7 @@ class HomeScreen extends StatelessWidget {
               _BoardSection(
                 title: '자주 묻는 질문',
                 icon: Icons.help_outline_rounded,
+                headerColor: AppColors.accentGold,
                 onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FaqScreen())),
                 rows: faqs
                     .take(3)
@@ -64,9 +66,10 @@ class _BoardRow {
 class _BoardSection extends StatelessWidget {
   final String title;
   final IconData icon;
+  final Color headerColor;
   final VoidCallback onMore;
   final List<_BoardRow> rows;
-  const _BoardSection({required this.title, required this.icon, required this.onMore, required this.rows});
+  const _BoardSection({required this.title, required this.icon, required this.headerColor, required this.onMore, required this.rows});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +85,8 @@ class _BoardSection extends StatelessWidget {
       child: Column(
         children: [
           Material(
-            color: Colors.transparent,
+            color: headerColor.withValues(alpha: 0.10),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: InkWell(
               onTap: onMore,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -90,13 +94,13 @@ class _BoardSection extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
                 child: Row(
                   children: [
-                    Icon(icon, size: 18, color: AppColors.primary),
+                    Icon(icon, size: 18, color: headerColor),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(title, style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                      child: Text(title, style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w800, color: headerColor)),
                     ),
                     const Text('더보기', style: TextStyle(fontSize: 12.5, color: AppColors.textMuted, fontWeight: FontWeight.w600)),
-                    const Icon(Icons.chevron_right_rounded, size: 18, color: AppColors.textMuted),
+                    Icon(Icons.chevron_right_rounded, size: 18, color: headerColor),
                   ],
                 ),
               ),

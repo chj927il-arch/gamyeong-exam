@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_background.dart';
 import '../widgets/marquee_text.dart';
@@ -37,8 +38,6 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   int _tabIndex = 0;
 
-  static const _titles = ['홈', '시험소개', '시험과목', '학습하기', '마이페이지'];
-
   final List<GlobalKey<NavigatorState>> _navKeys =
       List.generate(_kTabCount, (_) => GlobalKey<NavigatorState>());
 
@@ -67,41 +66,40 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final titleBarHeight = _tabIndex == 0 ? 92.0 : kToolbarHeight;
+    const titleBarHeight = 92.0;
+    final showEncourage = _tabIndex == 0;
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(_kEncourageBarHeight + titleBarHeight),
+        preferredSize: Size.fromHeight((showEncourage ? _kEncourageBarHeight : 0) + titleBarHeight),
         child: SafeArea(
           bottom: false,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const _EncourageBar(),
+              if (showEncourage) const _EncourageBar(),
               AppBar(
                 toolbarHeight: titleBarHeight,
-                title: _tabIndex == 0
-                    ? const Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '스터디박스',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 38,
-                              letterSpacing: -1.4,
-                              height: 1.0,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
-                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
-                          ),
-                        ],
-                      )
-                    : Text(_titles[_tabIndex]),
-                centerTitle: _tabIndex == 0,
+                title: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '스터디박스',
+                      style: GoogleFonts.blackHanSans(
+                        fontSize: 34,
+                        color: AppColors.textPrimary,
+                        letterSpacing: 0.5,
+                        height: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    const Text(
+                      '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
+                    ),
+                  ],
+                ),
+                centerTitle: true,
               ),
             ],
           ),
@@ -192,7 +190,7 @@ class _EncourageBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: _kEncourageBarHeight,
-      color: AppColors.accentPurple,
+      color: AppColors.primary,
       child: const MarqueeText(
         text: '여러분의 합격을 응원합니다.',
         style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),

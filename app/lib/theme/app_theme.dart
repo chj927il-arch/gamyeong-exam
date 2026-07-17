@@ -45,7 +45,7 @@ class AppTheme {
         brightness: Brightness.light,
       ),
     );
-    final textTheme = GoogleFonts.gothicA1TextTheme(base.textTheme).apply(
+    final textTheme = GoogleFonts.ibmPlexSansKrTextTheme(base.textTheme).apply(
       bodyColor: AppColors.textPrimary,
       displayColor: AppColors.textPrimary,
     );
