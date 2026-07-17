@@ -58,7 +58,8 @@ class AppTheme {
         backgroundColor: AppColors.bgBase,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        scrolledUnderElevation: 0,
+        scrolledUnderElevation: 3,
+        shadowColor: Colors.black.withValues(alpha: 0.08),
         foregroundColor: AppColors.textPrimary,
         centerTitle: true,
         titleTextStyle: textTheme.titleLarge?.copyWith(
@@ -79,7 +80,8 @@ class AppTheme {
         backgroundColor: AppColors.bgBase,
         indicatorColor: AppColors.primary.withValues(alpha: 0.12),
         surfaceTintColor: Colors.transparent,
-        elevation: 0,
+        shadowColor: Colors.black.withValues(alpha: 0.10),
+        elevation: 6,
         height: 68,
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
@@ -101,7 +103,8 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           textStyle: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-          elevation: 0,
+          elevation: 3,
+          shadowColor: AppColors.primary.withValues(alpha: 0.4),
         ),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(

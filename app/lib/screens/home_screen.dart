@@ -5,6 +5,7 @@ import '../theme/app_theme.dart';
 import '../theme/subject_style.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/rolling_banner.dart';
+import 'quiz_screen.dart';
 import 'subject_chapters_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,6 +23,8 @@ class HomeScreen extends StatelessWidget {
               const RollingBanner(),
               const SizedBox(height: 20),
               const _TodayHeader(),
+              const SizedBox(height: 16),
+              const _StudyReportCard(),
               const SizedBox(height: 16),
               const _StatsGrid(),
               const SizedBox(height: 16),
@@ -180,6 +183,136 @@ class _StreakBadge extends StatelessWidget {
           const SizedBox(width: 4),
           Text('$days일', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14)),
         ],
+      ),
+    );
+  }
+}
+
+/// 학습 리포트 — 과목별로 가장 취약한 챕터와 보강 제안을 보여준다.
+class _StudyReportCard extends StatelessWidget {
+  const _StudyReportCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.insights_rounded, size: 18, color: AppColors.primaryDark),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  '학습 리포트',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          const Padding(
+            padding: EdgeInsets.only(left: 44),
+            child: Text(
+              '정답률이 낮은 챕터부터 먼저 보강해보세요',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ...List.generate(weakChapters.length, (i) {
+            final w = weakChapters[i];
+            final style = subjectStyleOf(w.subjectId);
+            final isLast = i == weakChapters.length - 1;
+            return _WeakChapterRow(chapter: w, color: style.color, showDivider: !isLast);
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+class _WeakChapterRow extends StatelessWidget {
+  final WeakChapter chapter;
+  final Color color;
+  final bool showDivider;
+
+  const _WeakChapterRow({required this.chapter, required this.color, required this.showDivider});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => QuizScreen(
+            subjectId: chapter.subjectId,
+            subjectName: chapter.subjectName,
+            category: chapter.chapterName,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                      children: [
+                        TextSpan(text: '${chapter.subjectName} · '),
+                        TextSpan(text: chapter.chapterName, style: TextStyle(color: color)),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.wrong.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    '정답률 ${(chapter.accuracy * 100).round()}%',
+                    style: const TextStyle(color: AppColors.wrong, fontWeight: FontWeight.w800, fontSize: 12),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 18),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Text(
+                chapter.advice,
+                style: const TextStyle(fontSize: 12.5, color: AppColors.textSecondary, fontWeight: FontWeight.w400, height: 1.4),
+              ),
+            ),
+            if (showDivider) ...[
+              const SizedBox(height: 10),
+              const Divider(height: 1),
+            ],
+          ],
+        ),
       ),
     );
   }
