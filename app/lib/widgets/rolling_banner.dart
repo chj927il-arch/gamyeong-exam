@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class BannerItem {
@@ -131,15 +132,21 @@ class _BannerCard extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800, height: 1.25),
+                  style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 17, height: 1.2, letterSpacing: 0.2),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  item.subtitle,
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 13, fontWeight: FontWeight.w600, height: 1.2),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      item.subtitle,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 13, fontWeight: FontWeight.w600, height: 1.2),
+                    ),
+                  ),
                 ),
               ],
             ),

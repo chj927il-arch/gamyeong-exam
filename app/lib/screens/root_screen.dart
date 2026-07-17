@@ -92,10 +92,12 @@ class _RootScreenState extends State<RootScreen> {
                         height: 0.95,
                       ),
                     ),
-                    const SizedBox(height: 1),
-                    const Text(
-                      '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
+                    Transform.translate(
+                      offset: const Offset(0, -10),
+                      child: const Text(
+                        '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
+                      ),
                     ),
                   ],
                 ),
