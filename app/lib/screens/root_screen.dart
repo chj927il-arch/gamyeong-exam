@@ -66,7 +66,7 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const titleBarHeight = 92.0;
+    const titleBarHeight = 102.0;
     final showEncourage = _tabIndex == 0;
 
     return Scaffold(
@@ -84,15 +84,15 @@ class _RootScreenState extends State<RootScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '스터디박스',
+                      'STUDY BOX',
                       style: GoogleFonts.blackHanSans(
-                        fontSize: 34,
+                        fontSize: 46,
                         color: AppColors.textPrimary,
                         letterSpacing: 0.5,
-                        height: 1.0,
+                        height: 0.95,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 1),
                     const Text(
                       '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),

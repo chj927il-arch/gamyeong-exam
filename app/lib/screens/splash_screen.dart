@@ -117,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     ),
                     const Spacer(flex: 3),
                     const Text(
-                      '스터디박스',
+                      'STUDY BOX',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 52,

@@ -19,19 +19,19 @@ class BannerItem {
 const _defaultBanners = [
   BannerItem(
     title: '이번 주 신규\n유사문제 업데이트',
-    subtitle: '출제 비중 1위 약관법\n문제가 추가됐어요',
+    subtitle: '출제 비중 1위 약관법 문제가 추가됐어요',
     icon: Icons.auto_awesome_outlined,
     gradient: [Color(0xFFE8562F), Color(0xFFF4854A)],
   ),
   BannerItem(
     title: '오늘의 추천 챕터',
-    subtitle: '공정위 조직·절차, 최근 10년간\n두 번째로 많이 출제',
+    subtitle: '공정위 조직·절차, 최근 10년간 두 번째로 많이 출제',
     icon: Icons.local_fire_department_outlined,
     gradient: [Color(0xFF0E8F6F), Color(0xFF2CB491)],
   ),
   BannerItem(
     title: '프리미엄 전환하고\n전 과목 무제한 풀기',
-    subtitle: '경제법·민법·경영학\n전 챕터 잠금 해제',
+    subtitle: '경제법·민법·경영학 전 챕터 잠금 해제',
     icon: Icons.workspace_premium_outlined,
     gradient: [Color(0xFF3E4FA8), Color(0xFF6C7CD6)],
   ),
@@ -75,7 +75,7 @@ class _RollingBannerState extends State<RollingBanner> {
     return Column(
       children: [
         SizedBox(
-          height: 152,
+          height: 112,
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.banners.length,
@@ -112,7 +112,7 @@ class _BannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
         gradient: LinearGradient(
@@ -131,22 +131,25 @@ class _BannerCard extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: const TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w800, height: 1.3),
+                  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800, height: 1.25),
                 ),
-                const SizedBox(height: 7),
+                const SizedBox(height: 6),
                 Text(
                   item.subtitle,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 15, fontWeight: FontWeight.w600, height: 1.35),
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 13, fontWeight: FontWeight.w600, height: 1.2),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 10),
           Container(
-            width: 40,
-            height: 40,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.22), shape: BoxShape.circle),
-            child: Icon(item.icon, color: Colors.white, size: 20),
+            child: Icon(item.icon, color: Colors.white, size: 18),
           ),
         ],
       ),
