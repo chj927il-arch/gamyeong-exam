@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import '../widgets/app_background.dart';
 import 'compiled_note_screen.dart';
 import 'home_screen.dart';
@@ -25,8 +26,19 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: _tabIndex == 0 ? 64 : kToolbarHeight,
         title: _tabIndex == 0
-            ? const Text('가맹거래사 1차 시험대비', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 22))
+            ? const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('가맹거래사 1차 시험대비', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 21)),
+                  SizedBox(height: 2),
+                  Text(
+                    '가장 스마트하게, 가장 콤팩트하게.',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.textSecondary),
+                  ),
+                ],
+              )
             : Text(_titles[_tabIndex]),
         centerTitle: _tabIndex == 0,
       ),

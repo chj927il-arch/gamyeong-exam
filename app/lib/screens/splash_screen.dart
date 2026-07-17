@@ -3,7 +3,7 @@ import '../theme/app_theme.dart';
 import 'root_screen.dart';
 
 /// 앱 실행 시 처음 보여주는 표지(스플래시) 화면.
-/// 실제 수험서 표지 같은 느낌으로 잠시 보여준 뒤 메인 화면으로 자동 전환된다.
+/// 실제 수험서(에듀윌·공단기·이투스북 스타일) 표지처럼 화면 전체를 채우는 커버 디자인.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
     _fade = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    _rise = Tween<double>(begin: 18, end: 0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _rise = Tween<double>(begin: 22, end: 0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
 
     Future.delayed(const Duration(milliseconds: 5000), () {
@@ -44,145 +44,161 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.ink,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1B1D23), AppColors.ink, Color(0xFF0F1013)],
-          ),
-        ),
-        child: SafeArea(
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return Opacity(
-                opacity: _fade.value,
-                child: Transform.translate(offset: Offset(0, _rise.value), child: child),
-              );
-            },
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: _BookCover(),
+      backgroundColor: AppColors.primary,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // 배경 그라데이션 + 표지 장식 요소
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF20416B), AppColors.primary, Color(0xFF0F2138)],
               ),
             ),
           ),
-        ),
+          // 거대한 워터마크 연도 숫자 (표지 특유의 장식 그래픽)
+          Positioned(
+            right: -30,
+            top: 60,
+            child: Text(
+              '2026',
+              style: TextStyle(
+                fontSize: 160,
+                fontWeight: FontWeight.w900,
+                color: Colors.white.withValues(alpha: 0.06),
+                height: 1,
+              ),
+            ),
+          ),
+          // 대각선 골드 리본 장식
+          Positioned(
+            top: 46,
+            right: -64,
+            child: Transform.rotate(
+              angle: 0.785398, // 45deg
+              child: Container(
+                width: 220,
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                color: AppColors.accentGold,
+                alignment: Alignment.center,
+                child: const Text(
+                  'BEST SELLER',
+                  style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.2),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _fade.value,
+                  child: Transform.translate(offset: Offset(0, _rise.value), child: child),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 28, 32, 36),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: const Text(
+                        '2026 최신판 · 11개년 기출분석',
+                        style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.2),
+                      ),
+                    ),
+                    const Spacer(flex: 3),
+                    const Text(
+                      '가맹거래사',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 52,
+                        fontWeight: FontWeight.w900,
+                        height: 1.02,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Container(width: 28, height: 4, color: AppColors.accentGold),
+                        const SizedBox(width: 10),
+                        const Text(
+                          '1차 시험대비',
+                          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: -0.3),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      '가장 스마트하게, 가장 콤팩트하게.',
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.82), fontSize: 15.5, fontWeight: FontWeight.w600),
+                    ),
+                    const Spacer(flex: 2),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: const [
+                        _CoverTag(label: '경제법'),
+                        _CoverTag(label: '민법'),
+                        _CoverTag(label: '경영학'),
+                      ],
+                    ),
+                    const SizedBox(height: 22),
+                    Container(height: 1, color: Colors.white.withValues(alpha: 0.18)),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'GAMYEONG EXAM PREP',
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4),
+                        ),
+                        SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.2,
+                            valueColor: AlwaysStoppedAnimation(Colors.white.withValues(alpha: 0.7)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// 실제 수험서 표지를 연상시키는 카드형 디자인.
-class _BookCover extends StatelessWidget {
-  const _BookCover();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(28, 32, 28, 26),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.45), blurRadius: 40, offset: const Offset(0, 24)),
-              BoxShadow(color: AppColors.primary.withValues(alpha: 0.18), blurRadius: 60, offset: const Offset(0, 0)),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(999)),
-                    child: const Text(
-                      '2026 최신판',
-                      style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800, letterSpacing: 0.2),
-                    ),
-                  ),
-                  const Icon(Icons.workspace_premium_rounded, color: AppColors.primary, size: 22),
-                ],
-              ),
-              const SizedBox(height: 22),
-              const Text(
-                '가맹거래사',
-                style: TextStyle(color: AppColors.textPrimary, fontSize: 34, fontWeight: FontWeight.w800, height: 1.05, letterSpacing: -0.5),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    '1차 시험대비',
-                    style: TextStyle(color: AppColors.primary, fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.3),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-              Container(height: 1, color: AppColors.glassBorder),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: const [
-                  _SubjectTag(label: '경제법'),
-                  _SubjectTag(label: '민법'),
-                  _SubjectTag(label: '경영학'),
-                ],
-              ),
-              const SizedBox(height: 18),
-              const Text(
-                '11개년 기출 직접 분석 · 출제비중 순 챕터 학습',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w500, height: 1.4),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 28),
-        Text(
-          '합격까지, 오늘도 한 문제씩',
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 15, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 22),
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(
-            strokeWidth: 2.4,
-            valueColor: AlwaysStoppedAnimation(AppColors.primary.withValues(alpha: 0.9)),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SubjectTag extends StatelessWidget {
+class _CoverTag extends StatelessWidget {
   final String label;
-  const _SubjectTag({required this.label});
+  const _CoverTag({required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.trackBg,
+        color: Colors.white.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.24)),
       ),
       child: Text(
         label,
-        style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5, fontWeight: FontWeight.w700),
+        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
       ),
     );
   }

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
-/// 화이트 배경 + 블랙 텍스트 + 오렌지 키컬러의 프리미엄 라이트 테마.
+/// 화이트 배경 + 블랙 텍스트 + 네이비 키컬러의 신뢰감 있는 라이트 테마.
 class AppColors {
   AppColors._();
 
   // 배경
   static const bgBase = Color(0xFFFFFFFF);
-  static const bgGlow = Color(0xFFFFF3EA); // 섹션 상단용 아주 옅은 오렌지 톤
+  static const bgGlow = Color(0xFFEEF2F7); // 섹션 상단용 아주 옅은 네이비 톤
   static const surfaceRaised = Color(0xFFFAFAFC);
 
-  // 키 컬러 (오렌지)
-  static const primary = Color(0xFFFF6B1A); // 브랜드 오렌지
-  static const primaryDark = Color(0xFFC2410C); // 텍스트/아이콘용 짙은 오렌지 (대비 확보)
-  static const primarySoft = Color(0xFFFFE7D6); // 옅은 오렌지 배경(탭/배지용)
+  // 키 컬러 (네이비)
+  static const primary = Color(0xFF1B3358); // 브랜드 네이비
+  static const primaryDark = Color(0xFF102138); // 텍스트/아이콘용 짙은 네이비 (대비 확보)
+  static const primarySoft = Color(0xFFE4EAF2); // 옅은 네이비 배경(탭/배지용)
+  static const accentGold = Color(0xFFC98A2B); // 표지·배지용 포인트 골드(부분 강조 전용)
   static const ink = Color(0xFF15171C); // 보조 강조용 잉크블랙
 
   // 카드 표면

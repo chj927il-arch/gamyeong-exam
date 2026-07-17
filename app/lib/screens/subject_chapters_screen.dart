@@ -42,6 +42,8 @@ class SubjectChaptersScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             children: [
+              const Align(alignment: Alignment.topRight, child: _StatsHintBubble()),
+              const SizedBox(height: 14),
               Row(
                 children: [
                   Container(
@@ -107,6 +109,66 @@ class SubjectChaptersScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 상단 통계 아이콘을 가리키는 말풍선 안내문구.
+class _StatsHintBubble extends StatelessWidget {
+  const _StatsHintBubble();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(color: AppColors.primary.withValues(alpha: 0.25), blurRadius: 14, offset: const Offset(0, 6)),
+            ],
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.bar_chart_rounded, color: Colors.white, size: 16),
+              SizedBox(width: 6),
+              Text(
+                '문제 풀기 전, 출제경향부터 확인해보세요',
+                style: TextStyle(color: Colors.white, fontSize: 12.5, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 14),
+          child: CustomPaint(
+            size: const Size(14, 7),
+            painter: _BubbleTailPainter(color: AppColors.primary),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BubbleTailPainter extends CustomPainter {
+  final Color color;
+  const _BubbleTailPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width / 2, size.height)
+      ..close();
+    canvas.drawPath(path, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(covariant _BubbleTailPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _ChapterCard extends StatelessWidget {
