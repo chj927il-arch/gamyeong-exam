@@ -27,7 +27,7 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final titleBarHeight = _tabIndex == 0 ? 64.0 : kToolbarHeight;
+    final titleBarHeight = _tabIndex == 0 ? 70.0 : kToolbarHeight;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -44,11 +44,11 @@ class _RootScreenState extends State<RootScreen> {
                     ? const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('가맹거래사 1차 시험대비', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 21)),
-                          SizedBox(height: 2),
+                          Text('가맹거래사 1차 시험대비', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25)),
+                          SizedBox(height: 3),
                           Text(
                             '가장 스마트하게, 가장 콤팩트하게.',
-                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.textSecondary),
+                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
                           ),
                         ],
                       )

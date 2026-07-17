@@ -197,33 +197,14 @@ class _StudyReportCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.insights_rounded, size: 19, color: AppColors.primaryDark),
-              ),
-              const SizedBox(width: 10),
-              const Expanded(
-                child: Text(
-                  '학습 리포트',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
-                ),
-              ),
-            ],
+          const Text(
+            '학습 리포트',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
           ),
-          const SizedBox(height: 3),
-          const Padding(
-            padding: EdgeInsets.only(left: 46),
-            child: Text(
-              '정답률이 낮은 챕터부터 먼저 보강해보세요',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-            ),
+          const SizedBox(height: 4),
+          const Text(
+            '정답률이 낮은 챕터부터 먼저 보강해보세요',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 16),
           ...List.generate(weakChapters.length, (i) {

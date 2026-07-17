@@ -75,7 +75,7 @@ class _RollingBannerState extends State<RollingBanner> {
     return Column(
       children: [
         SizedBox(
-          height: 128,
+          height: 138,
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.banners.length,
@@ -131,12 +131,12 @@ class _BannerCard extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800, height: 1.3),
+                  style: const TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w800, height: 1.3),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 7),
                 Text(
                   item.subtitle,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 13, fontWeight: FontWeight.w600, height: 1.35),
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 15, fontWeight: FontWeight.w600, height: 1.35),
                 ),
               ],
             ),
