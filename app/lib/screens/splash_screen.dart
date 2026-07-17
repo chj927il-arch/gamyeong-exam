@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import 'login_screen.dart';
+import 'root_screen.dart';
 
 /// 앱 실행 시 처음 보여주는 표지(스플래시) 화면.
 /// 실제 수험서(에듀윌·공단기·이투스북 스타일) 표지처럼 화면 전체를 채우는 커버 디자인.
@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 400),
-          pageBuilder: (context, animation, secondary) => FadeTransition(opacity: animation, child: const LoginScreen()),
+          pageBuilder: (context, animation, secondary) => FadeTransition(opacity: animation, child: const RootScreen()),
         ),
       );
     });

@@ -6,12 +6,10 @@ import '../theme/subject_style.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/progress_ring.dart';
 import '../widgets/weak_chapter_row.dart';
-import 'change_password_screen.dart';
-import 'login_screen.dart';
 import 'subject_chapters_screen.dart';
 import 'wrong_note_screen.dart';
 
-/// 마이페이지 탭 — 학습리포트 전체 + 계정 관리(비밀번호 변경, 오답노트, 로그아웃).
+/// 마이페이지 탭 — 학습리포트 전체 + 오답노트 바로가기.
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
 
@@ -65,34 +63,12 @@ class MyPageScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const Text('계정 관리', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
-        const SizedBox(height: 10),
         GlassCard(
           padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              _MenuTile(
-                icon: Icons.error_outline_rounded,
-                label: '오답노트',
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const WrongNoteScreen())),
-              ),
-              const Divider(height: 1),
-              _MenuTile(
-                icon: Icons.lock_outline_rounded,
-                label: '비밀번호 변경',
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePasswordScreen())),
-              ),
-              const Divider(height: 1),
-              _MenuTile(
-                icon: Icons.logout_rounded,
-                label: '로그아웃',
-                color: AppColors.wrong,
-                onTap: () => Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (route) => false,
-                ),
-              ),
-            ],
+          child: _MenuTile(
+            icon: Icons.error_outline_rounded,
+            label: '오답노트',
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const WrongNoteScreen())),
           ),
         ),
       ],
@@ -391,16 +367,14 @@ class _SubjectProgressCard extends StatelessWidget {
 class _MenuTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color? color;
   final VoidCallback onTap;
-  const _MenuTile({required this.icon, required this.label, required this.onTap, this.color});
+  const _MenuTile({required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final tileColor = color ?? AppColors.textPrimary;
     return ListTile(
-      leading: Icon(icon, color: tileColor),
-      title: Text(label, style: TextStyle(color: tileColor, fontWeight: FontWeight.w700, fontSize: 15)),
+      leading: Icon(icon, color: AppColors.textPrimary),
+      title: Text(label, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 15)),
       trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
       onTap: onTap,
     );
