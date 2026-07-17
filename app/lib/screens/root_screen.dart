@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_background.dart';
 import '../widgets/marquee_text.dart';
+import 'exam_intro_screen.dart';
+import 'exam_subjects_screen.dart';
 import 'home_screen.dart';
-import 'learning_report_screen.dart';
-import 'wrong_note_screen.dart';
+import 'mypage_screen.dart';
+import 'study_screen.dart';
 
 const double _kEncourageBarHeight = 24;
+const int _kTabCount = 5;
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -18,15 +21,17 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   int _tabIndex = 0;
 
-  static const _titles = ['홈', '오답노트', '학습리포트'];
+  static const _titles = ['홈', '시험소개', '시험과목', '학습하기', '마이페이지'];
 
   final List<GlobalKey<NavigatorState>> _navKeys =
-      List.generate(3, (_) => GlobalKey<NavigatorState>());
+      List.generate(_kTabCount, (_) => GlobalKey<NavigatorState>());
 
   static const _tabScreens = [
     HomeScreen(),
-    WrongNoteScreen(),
-    LearningReportScreen(),
+    ExamIntroScreen(),
+    ExamSubjectsScreen(),
+    StudyScreen(),
+    MyPageScreen(),
   ];
 
   Widget _buildTabNavigator(int index) {
@@ -34,6 +39,14 @@ class _RootScreenState extends State<RootScreen> {
       key: _navKeys[index],
       onGenerateRoute: (settings) => MaterialPageRoute(builder: (_) => _tabScreens[index]),
     );
+  }
+
+  void _onDestinationSelected(int i) {
+    if (i == _tabIndex) {
+      _navKeys[i].currentState?.popUntil((route) => route.isFirst);
+    } else {
+      setState(() => _tabIndex = i);
+    }
   }
 
   @override
@@ -74,13 +87,13 @@ class _RootScreenState extends State<RootScreen> {
         child: SafeArea(
           child: IndexedStack(
             index: _tabIndex,
-            children: List.generate(3, _buildTabNavigator),
+            children: List.generate(_kTabCount, _buildTabNavigator),
           ),
         ),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tabIndex,
-        onDestinationSelected: (i) => setState(() => _tabIndex = i),
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
@@ -88,14 +101,24 @@ class _RootScreenState extends State<RootScreen> {
             label: '홈',
           ),
           NavigationDestination(
-            icon: Icon(Icons.error_outline),
-            selectedIcon: Icon(Icons.error),
-            label: '오답노트',
+            icon: Icon(Icons.info_outline_rounded),
+            selectedIcon: Icon(Icons.info_rounded),
+            label: '시험소개',
           ),
           NavigationDestination(
-            icon: Icon(Icons.insights_outlined),
-            selectedIcon: Icon(Icons.insights),
-            label: '학습리포트',
+            icon: Icon(Icons.menu_book_outlined),
+            selectedIcon: Icon(Icons.menu_book_rounded),
+            label: '시험과목',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.edit_note_outlined),
+            selectedIcon: Icon(Icons.edit_note_rounded),
+            label: '학습하기',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline_rounded),
+            selectedIcon: Icon(Icons.person_rounded),
+            label: '마이페이지',
           ),
         ],
       ),
