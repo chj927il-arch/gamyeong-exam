@@ -5,10 +5,10 @@ import '../theme/subject_style.dart';
 import '../widgets/app_background.dart';
 import '../widgets/glass_card.dart';
 import 'quiz_screen.dart';
-import 'stats_screen.dart';
 
 /// 과목 진입 시 보여주는 챕터(유형) 목록 화면.
 /// 출제 비중이 큰 순서대로 챕터가 정렬되어, 비중 높은 유형부터 집중 공략할 수 있게 한다.
+/// 이 목차 자체가 과목의 출제 통계이므로 별도의 통계 화면을 두지 않는다.
 class SubjectChaptersScreen extends StatelessWidget {
   final String subjectId;
   final String subjectName;
@@ -20,30 +20,18 @@ class SubjectChaptersScreen extends StatelessWidget {
     final style = subjectStyleOf(subjectId);
     final chapters = chapterStatsFor(subjectId);
     final isAnalyzed = subjectStatsIsAnalyzed[subjectId] ?? false;
+    final top3 = chapters.take(3).toList();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(subjectName),
         centerTitle: false,
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => StatsScreen(subjectId: subjectId, subjectName: subjectName),
-              ),
-            ),
-            icon: const Icon(Icons.bar_chart_rounded),
-            tooltip: '출제 통계',
-          ),
-        ],
       ),
       body: AppBackground(
         child: SafeArea(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             children: [
-              const Align(alignment: Alignment.topRight, child: _StatsHintBubble()),
-              const SizedBox(height: 14),
               Row(
                 children: [
                   Container(
@@ -68,6 +56,20 @@ class SubjectChaptersScreen extends StatelessWidget {
                           isAnalyzed ? '기출 분석 기반 · 출제 비중 높은 순' : '기출 분석 준비 중 · 과목 대분류 순',
                           style: const TextStyle(fontSize: 13.5, color: AppColors.textSecondary, fontWeight: FontWeight.w400),
                         ),
+                        if (isAnalyzed && top3.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: style.color.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              '출제 비중 1~3위: ${top3.map((s) => s.topic).join(' · ')}',
+                              style: TextStyle(fontSize: 12.5, color: style.color, fontWeight: FontWeight.w700, height: 1.4),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -109,66 +111,6 @@ class SubjectChaptersScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-/// 상단 통계 아이콘을 가리키는 말풍선 안내문구.
-class _StatsHintBubble extends StatelessWidget {
-  const _StatsHintBubble();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(color: AppColors.primary.withValues(alpha: 0.25), blurRadius: 14, offset: const Offset(0, 6)),
-            ],
-          ),
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.bar_chart_rounded, color: Colors.white, size: 16),
-              SizedBox(width: 6),
-              Text(
-                '문제 풀기 전, 출제경향부터 확인해보세요',
-                style: TextStyle(color: Colors.white, fontSize: 12.5, fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 14),
-          child: CustomPaint(
-            size: const Size(14, 7),
-            painter: _BubbleTailPainter(color: AppColors.primary),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _BubbleTailPainter extends CustomPainter {
-  final Color color;
-  const _BubbleTailPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width / 2, size.height)
-      ..close();
-    canvas.drawPath(path, Paint()..color = color);
-  }
-
-  @override
-  bool shouldRepaint(covariant _BubbleTailPainter oldDelegate) => oldDelegate.color != color;
 }
 
 class _ChapterCard extends StatelessWidget {

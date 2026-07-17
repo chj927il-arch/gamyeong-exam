@@ -4,6 +4,7 @@ import '../models/exam_subject.dart';
 import '../theme/app_theme.dart';
 import '../theme/subject_style.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/launch_banner.dart';
 import '../widgets/rolling_banner.dart';
 import 'quiz_screen.dart';
 import 'subject_chapters_screen.dart';
@@ -20,6 +21,8 @@ class HomeScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             children: [
+              const LaunchBanner(),
+              const SizedBox(height: 12),
               const RollingBanner(),
               const SizedBox(height: 20),
               const _TodayHeader(),
@@ -419,7 +422,7 @@ class _WeeklyActivityCard extends StatelessWidget {
                                   ? const LinearGradient(
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
-                                      colors: [AppColors.primary, Color(0xFFFFA355)],
+                                      colors: [AppColors.primary, Color(0xFF3E6FB0)],
                                     )
                                   : null,
                               color: isToday ? null : AppColors.trackBg,

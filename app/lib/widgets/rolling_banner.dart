@@ -21,19 +21,19 @@ const _defaultBanners = [
     title: '이번 주 신규 유사문제 업데이트',
     subtitle: '출제 비중 1위 약관법 문제가 추가됐어요',
     icon: Icons.auto_awesome_outlined,
-    gradient: [Color(0xFFFF7A1E), Color(0xFFFF9A56)],
+    gradient: [Color(0xFF1B3358), Color(0xFF2E4E7C)],
   ),
   BannerItem(
     title: '오늘의 추천 챕터',
     subtitle: '공정위 조직·절차, 최근 10년간 두 번째로 많이 출제',
     icon: Icons.local_fire_department_outlined,
-    gradient: [Color(0xFFFF9142), Color(0xFFFFC069)],
+    gradient: [Color(0xFF2B6777), Color(0xFF3E8595)],
   ),
   BannerItem(
     title: '프리미엄 전환하고 전 과목 무제한 풀기',
     subtitle: '경제법·민법·경영학 전 챕터 잠금 해제',
     icon: Icons.workspace_premium_outlined,
-    gradient: [Color(0xFFE85D04), Color(0xFFFF7A1E)],
+    gradient: [Color(0xFFC98A2B), Color(0xFFDBA53F)],
   ),
 ];
 
@@ -75,7 +75,7 @@ class _RollingBannerState extends State<RollingBanner> {
     return Column(
       children: [
         SizedBox(
-          height: 104,
+          height: 128,
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.banners.length,
@@ -122,6 +122,7 @@ class _BannerCard extends StatelessWidget {
         ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Column(
@@ -130,25 +131,22 @@ class _BannerCard extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: const TextStyle(color: Colors.white, fontSize: 16.5, fontWeight: FontWeight.w800, height: 1.3),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800, height: 1.3),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   item.subtitle,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 13.5, fontWeight: FontWeight.w600),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 13, fontWeight: FontWeight.w600, height: 1.35),
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 10),
           Container(
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.22), shape: BoxShape.circle),
-            child: Icon(item.icon, color: Colors.white, size: 22),
+            child: Icon(item.icon, color: Colors.white, size: 20),
           ),
         ],
       ),
