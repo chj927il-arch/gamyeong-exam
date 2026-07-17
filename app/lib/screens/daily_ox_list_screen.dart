@@ -25,10 +25,10 @@ class DailyOxListScreen extends StatelessWidget {
               height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.accentPurple.withValues(alpha: 0.12),
+                color: AppColors.ink.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text('OX', style: TextStyle(color: AppColors.accentPurple, fontWeight: FontWeight.w900, fontSize: 13)),
+              child: const Text('OX', style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w900, fontSize: 13)),
             ),
             title: Row(
               children: [

@@ -66,7 +66,7 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const titleBarHeight = 102.0;
+    const titleBarHeight = 116.0;
     final showEncourage = _tabIndex == 0;
 
     return Scaffold(
@@ -80,7 +80,9 @@ class _RootScreenState extends State<RootScreen> {
               if (showEncourage) const _EncourageBar(),
               AppBar(
                 toolbarHeight: titleBarHeight,
-                title: Column(
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
@@ -100,6 +102,7 @@ class _RootScreenState extends State<RootScreen> {
                       ),
                     ),
                   ],
+                  ),
                 ),
                 centerTitle: true,
               ),

@@ -72,8 +72,11 @@ class _DailyOxBanner extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.accentPurple, Color(0xFFB05CF0)],
+          colors: [AppColors.ink, Color(0xFF232733)],
         ),
+        boxShadow: [
+          BoxShadow(color: AppColors.ink.withValues(alpha: 0.2), blurRadius: 18, offset: const Offset(0, 8)),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -89,8 +92,12 @@ class _DailyOxBanner extends StatelessWidget {
                   width: 46,
                   height: 46,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), shape: BoxShape.circle),
-                  child: const Text('OX', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15)),
+                  decoration: BoxDecoration(
+                    color: AppColors.accentGold.withValues(alpha: 0.16),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.accentGold.withValues(alpha: 0.4)),
+                  ),
+                  child: const Text('OX', style: TextStyle(color: AppColors.accentGold, fontWeight: FontWeight.w900, fontSize: 15)),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -99,7 +106,7 @@ class _DailyOxBanner extends StatelessWidget {
                     children: [
                       Text(
                         '데일리 OX 퀴즈 · ${today.date}',
-                        style: const TextStyle(color: Colors.white70, fontSize: 11.5, fontWeight: FontWeight.w700),
+                        style: TextStyle(color: AppColors.accentGold.withValues(alpha: 0.9), fontSize: 11.5, fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 3),
                       const Text(
@@ -109,7 +116,7 @@ class _DailyOxBanner extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded, color: Colors.white, size: 22),
+                const Icon(Icons.chevron_right_rounded, color: AppColors.accentGold, size: 22),
               ],
             ),
           ),
