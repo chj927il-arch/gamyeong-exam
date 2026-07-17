@@ -9,7 +9,7 @@ import 'mypage_screen.dart';
 import 'study_screen.dart';
 
 const double _kEncourageBarHeight = 24;
-const double _kTopNavHeight = 60;
+const double _kTopNavHeight = 56;
 const int _kTabCount = 5;
 
 class _NavItem {
@@ -67,17 +67,16 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final titleBarHeight = _tabIndex == 0 ? 70.0 : kToolbarHeight;
+    final titleBarHeight = _tabIndex == 0 ? 92.0 : kToolbarHeight;
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(_kTopNavHeight + _kEncourageBarHeight + titleBarHeight),
+        preferredSize: Size.fromHeight(_kEncourageBarHeight + titleBarHeight),
         child: SafeArea(
           bottom: false,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _TopNavBar(selectedIndex: _tabIndex, onSelected: _onDestinationSelected),
               const _EncourageBar(),
               AppBar(
                 toolbarHeight: titleBarHeight,
@@ -85,8 +84,16 @@ class _RootScreenState extends State<RootScreen> {
                     ? const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('스터디박스', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25)),
-                          SizedBox(height: 3),
+                          Text(
+                            '스터디박스',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 38,
+                              letterSpacing: -1.4,
+                              height: 1.0,
+                            ),
+                          ),
+                          SizedBox(height: 5),
                           Text(
                             '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
                             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
@@ -102,9 +109,16 @@ class _RootScreenState extends State<RootScreen> {
       ),
       body: AppBackground(
         child: SafeArea(
-          child: IndexedStack(
-            index: _tabIndex,
-            children: List.generate(_kTabCount, _buildTabNavigator),
+          child: Column(
+            children: [
+              _TopNavBar(selectedIndex: _tabIndex, onSelected: _onDestinationSelected),
+              Expanded(
+                child: IndexedStack(
+                  index: _tabIndex,
+                  children: List.generate(_kTabCount, _buildTabNavigator),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -112,7 +126,7 @@ class _RootScreenState extends State<RootScreen> {
   }
 }
 
-/// 상단 탭 메뉴 — 기존 하단 네비게이션을 상단 배너 위로 옮긴 형태.
+/// 상단 탭 메뉴 — 타이틀/응원바로 아래, 배너 바로 위에 고정된다.
 class _TopNavBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelected;
@@ -139,8 +153,8 @@ class _TopNavBar extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(selected ? item.selectedIcon : item.icon, size: 21, color: color),
-                    const SizedBox(height: 3),
+                    Icon(selected ? item.selectedIcon : item.icon, size: 19, color: color),
+                    const SizedBox(height: 2),
                     Text(
                       item.label,
                       style: TextStyle(
@@ -149,7 +163,7 @@ class _TopNavBar extends StatelessWidget {
                         color: color,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Container(
                       height: 2.5,
                       width: 28,
@@ -178,7 +192,7 @@ class _EncourageBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: _kEncourageBarHeight,
-      color: AppColors.primary,
+      color: AppColors.accentPurple,
       child: const MarqueeText(
         text: '여러분의 합격을 응원합니다.',
         style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),

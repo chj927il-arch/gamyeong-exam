@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data/board_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/launch_banner.dart';
 import '../widgets/rolling_banner.dart';
@@ -19,10 +20,32 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
-            children: const [
-              RollingBanner(),
-              SizedBox(height: 20),
-              _QuickMenuRow(),
+            children: [
+              const RollingBanner(),
+              const SizedBox(height: 24),
+              _BoardSection(
+                title: '공지사항',
+                icon: Icons.campaign_outlined,
+                onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoticeScreen())),
+                rows: notices
+                    .take(3)
+                    .map((n) => _BoardRow(
+                          leading: n.isNew ? '[NEW] ' : null,
+                          title: n.title,
+                          trailing: n.date,
+                        ))
+                    .toList(),
+              ),
+              const SizedBox(height: 20),
+              _BoardSection(
+                title: '자주 묻는 질문',
+                icon: Icons.help_outline_rounded,
+                onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FaqScreen())),
+                rows: faqs
+                    .take(3)
+                    .map((f) => _BoardRow(leading: 'Q. ', title: f.question))
+                    .toList(),
+              ),
             ],
           ),
         ),
@@ -31,41 +54,19 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _QuickMenuRow extends StatelessWidget {
-  const _QuickMenuRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _QuickMenuCard(
-            icon: Icons.campaign_outlined,
-            label: '공지사항',
-            color: AppColors.primary,
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoticeScreen())),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _QuickMenuCard(
-            icon: Icons.help_outline_rounded,
-            label: 'FAQ',
-            color: AppColors.accentGold,
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FaqScreen())),
-          ),
-        ),
-      ],
-    );
-  }
+class _BoardRow {
+  final String? leading;
+  final String title;
+  final String? trailing;
+  const _BoardRow({this.leading, required this.title, this.trailing});
 }
 
-class _QuickMenuCard extends StatelessWidget {
+class _BoardSection extends StatelessWidget {
+  final String title;
   final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-  const _QuickMenuCard({required this.icon, required this.label, required this.color, required this.onTap});
+  final VoidCallback onMore;
+  final List<_BoardRow> rows;
+  const _BoardSection({required this.title, required this.icon, required this.onMore, required this.rows});
 
   @override
   Widget build(BuildContext context) {
@@ -73,34 +74,78 @@ class _QuickMenuCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.18)),
+        border: Border.all(color: AppColors.glassBorder),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.035), blurRadius: 14, offset: const Offset(0, 6)),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18),
-            child: Column(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-                  child: Icon(icon, size: 21, color: color),
+      child: Column(
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onMore,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+                child: Row(
+                  children: [
+                    Icon(icon, size: 18, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(title, style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                    ),
+                    const Text('더보기', style: TextStyle(fontSize: 12.5, color: AppColors.textMuted, fontWeight: FontWeight.w600)),
+                    const Icon(Icons.chevron_right_rounded, size: 18, color: AppColors.textMuted),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                Text(label, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-              ],
+              ),
             ),
           ),
-        ),
+          const Divider(height: 1),
+          ...List.generate(rows.length, (i) {
+            final row = rows[i];
+            return Column(
+              children: [
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onMore,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  if (row.leading != null)
+                                    TextSpan(
+                                      text: row.leading,
+                                      style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w800),
+                                    ),
+                                  TextSpan(text: row.title),
+                                ],
+                              ),
+                              style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (row.trailing != null) ...[
+                            const SizedBox(width: 10),
+                            Text(row.trailing!, style: const TextStyle(fontSize: 12, color: AppColors.textMuted, fontWeight: FontWeight.w500)),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                if (i != rows.length - 1) const Divider(height: 1, indent: 16, endIndent: 16),
+              ],
+            );
+          }),
+        ],
       ),
     );
   }

@@ -15,6 +15,7 @@ class AppColors {
   static const primaryDark = Color(0xFF102138); // 텍스트/아이콘용 짙은 네이비 (대비 확보)
   static const primarySoft = Color(0xFFE4EAF2); // 옅은 네이비 배경(탭/배지용)
   static const accentGold = Color(0xFFC98A2B); // 표지·배지용 포인트 골드(부분 강조 전용)
+  static const accentPurple = Color(0xFF8B2FE0); // 응원 문구 바 등 쨍한 포인트용 비비드 퍼플
   static const ink = Color(0xFF15171C); // 보조 강조용 잉크블랙
 
   // 카드 표면
