@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_background.dart';
+import '../widgets/marquee_text.dart';
 import 'compiled_note_screen.dart';
 import 'home_screen.dart';
 import 'wrong_note_screen.dart';
@@ -94,10 +95,10 @@ class _EncourageBar extends StatelessWidget {
       width: double.infinity,
       height: _kEncourageBarHeight,
       color: AppColors.primary,
-      alignment: Alignment.center,
-      child: const Text(
-        '여러분의 합격을 응원합니다.',
+      child: const MarqueeText(
+        text: '여러분의 합격을 응원합니다.',
         style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+        height: _kEncourageBarHeight,
       ),
     );
   }

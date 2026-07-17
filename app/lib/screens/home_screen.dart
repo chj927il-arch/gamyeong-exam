@@ -147,7 +147,7 @@ class _TodayHeader extends StatelessWidget {
               value: StudyStats.todaySolved / StudyStats.todayGoal,
               minHeight: 9,
               backgroundColor: Colors.white.withValues(alpha: 0.14),
-              valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+              valueColor: const AlwaysStoppedAnimation(AppColors.accentGold),
             ),
           ),
           const SizedBox(height: 10),
