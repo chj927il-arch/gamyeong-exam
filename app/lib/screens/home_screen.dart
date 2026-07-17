@@ -62,37 +62,54 @@ class _SubjectMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.glassBorder)),
+      padding: const EdgeInsets.only(top: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: const Border(bottom: BorderSide(color: AppColors.glassBorder)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Row(
         children: List.generate(examSubjects.length, (i) {
           final subject = examSubjects[i];
           final style = subjectStyleOf(subject.id);
           return Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  left: i == 0 ? BorderSide.none : const BorderSide(color: AppColors.glassBorder),
-                ),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => SubjectChaptersScreen(subjectId: subject.id, subjectName: subject.name),
-                    ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => SubjectChaptersScreen(subjectId: subject.id, subjectName: subject.name),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 11),
-                    child: Center(
-                      child: Text(
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: style.color.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                        child: Icon(style.icon, size: 21, color: style.color),
+                      ),
+                      const SizedBox(height: 7),
+                      Text(
                         subject.name,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: style.color, fontWeight: FontWeight.w800, fontSize: 16),
+                        style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w800, fontSize: 14.5),
                       ),
-                    ),
+                      const SizedBox(height: 7),
+                      Container(
+                        width: 22,
+                        height: 3,
+                        decoration: BoxDecoration(color: style.color, borderRadius: BorderRadius.circular(999)),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -195,44 +212,49 @@ class _StudyReportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(11),
                 ),
-                child: const Icon(Icons.insights_rounded, size: 18, color: AppColors.primaryDark),
+                child: const Icon(Icons.insights_rounded, size: 19, color: AppColors.primaryDark),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               const Expanded(
-                child: Text(
-                  '학습 리포트',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '학습 리포트',
+                      style: TextStyle(fontSize: 16.5, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      '정답률이 낮은 챕터부터 먼저 보강해보세요',
+                      style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 2),
-          const Padding(
-            padding: EdgeInsets.only(left: 44),
-            child: Text(
-              '정답률이 낮은 챕터부터 먼저 보강해보세요',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-            ),
           ),
           const SizedBox(height: 16),
           ...List.generate(weakChapters.length, (i) {
             final w = weakChapters[i];
             final style = subjectStyleOf(w.subjectId);
             final isLast = i == weakChapters.length - 1;
-            return _WeakChapterRow(chapter: w, color: style.color, showDivider: !isLast);
+            return Padding(
+              padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
+              child: _WeakChapterRow(chapter: w, color: style.color),
+            );
           }),
         ],
       ),
@@ -243,75 +265,80 @@ class _StudyReportCard extends StatelessWidget {
 class _WeakChapterRow extends StatelessWidget {
   final WeakChapter chapter;
   final Color color;
-  final bool showDivider;
 
-  const _WeakChapterRow({required this.chapter, required this.color, required this.showDivider});
+  const _WeakChapterRow({required this.chapter, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => QuizScreen(
-            subjectId: chapter.subjectId,
-            subjectName: chapter.subjectName,
-            category: chapter.chapterName,
+    final percent = (chapter.accuracy * 100).round();
+
+    return Material(
+      color: AppColors.wrong.withValues(alpha: 0.045),
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => QuizScreen(
+              subjectId: chapter.subjectId,
+              subjectName: chapter.subjectName,
+              category: chapter.chapterName,
+            ),
           ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.wrong.withValues(alpha: 0.16)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(color: AppColors.wrong.withValues(alpha: 0.12), shape: BoxShape.circle),
+                child: Text(
+                  '$percent%',
+                  style: const TextStyle(color: AppColors.wrong, fontWeight: FontWeight.w800, fontSize: 12.5),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        TextSpan(text: '${chapter.subjectName} · '),
-                        TextSpan(text: chapter.chapterName, style: TextStyle(color: color)),
+                        Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${chapter.subjectName} · ${chapter.chapterName}',
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 5),
+                    Text(
+                      chapter.advice,
+                      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, fontWeight: FontWeight.w400, height: 1.45),
+                    ),
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppColors.wrong.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    '정답률 ${(chapter.accuracy * 100).round()}%',
-                    style: const TextStyle(color: AppColors.wrong, fontWeight: FontWeight.w800, fontSize: 12),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 18),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Text(
-                chapter.advice,
-                style: const TextStyle(fontSize: 12.5, color: AppColors.textSecondary, fontWeight: FontWeight.w400, height: 1.4),
               ),
-            ),
-            if (showDivider) ...[
-              const SizedBox(height: 10),
-              const Divider(height: 1),
+              const SizedBox(width: 4),
+              const Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 18),
+              ),
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -462,77 +489,132 @@ class _SubjectCard extends StatelessWidget {
     final style = subjectStyleOf(subject.id);
     final progress = mockSubjectProgress[subject.id] ?? 0;
     final todaySolved = mockSubjectTodaySolved[subject.id] ?? 0;
-    final percentLabel = '${(progress * 100).round()}%';
 
-    return GlassCard(
-      tint: style.color,
-      tintOpacity: 0.05,
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => SubjectChaptersScreen(subjectId: subject.id, subjectName: subject.name),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [style.color.withValues(alpha: 0.08), Colors.white],
+        ),
+        border: Border.all(color: style.color.withValues(alpha: 0.16)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 16, offset: const Offset(0, 8)),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => SubjectChaptersScreen(subjectId: subject.id, subjectName: subject.name),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ProgressRing(progress: progress, color: style.color),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              subject.name,
+                              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: AppColors.textPrimary),
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 20),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      if (subject.categories.isNotEmpty)
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: subject.categories
+                              .map((c) => Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: style.color.withValues(alpha: 0.10),
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                    child: Text(
+                                      c,
+                                      style: TextStyle(color: style.color, fontSize: 11.5, fontWeight: FontWeight.w700),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Icon(Icons.edit_note_rounded, size: 15, color: AppColors.textMuted),
+                          const SizedBox(width: 4),
+                          Text(
+                            '오늘 $todaySolved문제 풀이',
+                            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12.5, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+      ),
+    );
+  }
+}
+
+/// 과목 학습 진행률을 보여주는 작은 링(도넛) 게이지.
+class _ProgressRing extends StatelessWidget {
+  final double progress;
+  final Color color;
+  const _ProgressRing({required this.progress, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 56,
+      height: 56,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 4,
-                height: 20,
-                decoration: BoxDecoration(color: style.color, borderRadius: BorderRadius.circular(999)),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                subject.name,
-                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: AppColors.textPrimary),
-              ),
-              const Spacer(),
-              Text(
-                percentLabel,
-                style: TextStyle(color: style.color, fontWeight: FontWeight.w800, fontSize: 16),
-              ),
-              const SizedBox(width: 6),
-              const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 20),
-            ],
-          ),
-          if (subject.categories.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: subject.categories
-                  .map((c) => Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: style.color.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(999),
-                          border: Border.all(color: style.color.withValues(alpha: 0.18)),
-                        ),
-                        child: Text(
-                          c,
-                          style: TextStyle(color: style.color, fontSize: 11.5, fontWeight: FontWeight.w600),
-                        ),
-                      ))
-                  .toList(),
+          SizedBox(
+            width: 56,
+            height: 56,
+            child: CircularProgressIndicator(
+              value: 1,
+              strokeWidth: 6,
+              valueColor: AlwaysStoppedAnimation(color.withValues(alpha: 0.14)),
             ),
-          ],
-          const SizedBox(height: 14),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
+          ),
+          SizedBox(
+            width: 56,
+            height: 56,
+            child: CircularProgressIndicator(
               value: progress,
-              minHeight: 7,
-              backgroundColor: style.color.withValues(alpha: 0.10),
-              valueColor: AlwaysStoppedAnimation(style.color),
+              strokeWidth: 6,
+              strokeCap: StrokeCap.round,
+              valueColor: AlwaysStoppedAnimation(color),
             ),
           ),
-          const SizedBox(height: 8),
           Text(
-            '오늘 $todaySolved문제 풀이',
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12.5, fontWeight: FontWeight.w500),
+            '${(progress * 100).round()}%',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: color),
           ),
         ],
       ),
