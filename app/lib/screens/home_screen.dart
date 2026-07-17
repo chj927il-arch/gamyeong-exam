@@ -62,13 +62,12 @@ class _SubjectMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: const Border(bottom: BorderSide(color: AppColors.glassBorder)),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
+        border: Border(
+          top: BorderSide(color: AppColors.glassBorder.withValues(alpha: 0.7)),
+          bottom: BorderSide(color: AppColors.glassBorder.withValues(alpha: 0.7)),
+        ),
       ),
       child: Row(
         children: List.generate(examSubjects.length, (i) {
@@ -84,32 +83,11 @@ class _SubjectMenu extends StatelessWidget {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: style.color.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(13),
-                        ),
-                        child: Icon(style.icon, size: 21, color: style.color),
-                      ),
-                      const SizedBox(height: 7),
-                      Text(
-                        subject.name,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w800, fontSize: 14.5),
-                      ),
-                      const SizedBox(height: 7),
-                      Container(
-                        width: 22,
-                        height: 3,
-                        decoration: BoxDecoration(color: style.color, borderRadius: BorderRadius.circular(999)),
-                      ),
-                    ],
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    subject.name,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: style.color, fontWeight: FontWeight.w800, fontSize: 18),
                   ),
                 ),
               ),
@@ -234,12 +212,12 @@ class _StudyReportCard extends StatelessWidget {
                   children: [
                     Text(
                       '학습 리포트',
-                      style: TextStyle(fontSize: 16.5, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
                     ),
-                    SizedBox(height: 2),
+                    SizedBox(height: 3),
                     Text(
                       '정답률이 낮은 챕터부터 먼저 보강해보세요',
-                      style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+                      style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -296,13 +274,13 @@ class _WeakChapterRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 44,
+                height: 44,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(color: AppColors.wrong.withValues(alpha: 0.12), shape: BoxShape.circle),
                 child: Text(
                   '$percent%',
-                  style: const TextStyle(color: AppColors.wrong, fontWeight: FontWeight.w800, fontSize: 12.5),
+                  style: const TextStyle(color: AppColors.wrong, fontWeight: FontWeight.w800, fontSize: 13.5),
                 ),
               ),
               const SizedBox(width: 12),
@@ -317,17 +295,17 @@ class _WeakChapterRow extends StatelessWidget {
                         Expanded(
                           child: Text(
                             '${chapter.subjectName} · ${chapter.chapterName}',
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                            style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 6),
                     Text(
                       chapter.advice,
-                      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, fontWeight: FontWeight.w400, height: 1.45),
+                      style: const TextStyle(fontSize: 14, color: AppColors.textSecondary, fontWeight: FontWeight.w400, height: 1.45),
                     ),
                   ],
                 ),
@@ -492,15 +470,11 @@ class _SubjectCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [style.color.withValues(alpha: 0.08), Colors.white],
-        ),
-        border: Border.all(color: style.color.withValues(alpha: 0.16)),
+        border: Border.all(color: style.color.withValues(alpha: 0.18)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 16, offset: const Offset(0, 8)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.045), blurRadius: 18, offset: const Offset(0, 8)),
         ],
       ),
       child: Material(
@@ -528,6 +502,14 @@ class _SubjectCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
+                          Container(
+                            width: 26,
+                            height: 26,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(color: style.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
+                            child: Icon(style.icon, size: 15, color: style.color),
+                          ),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               subject.name,
