@@ -49,7 +49,7 @@ class _LaunchBannerState extends State<LaunchBanner> {
             onPageChanged: (i) => setState(() => _page = i),
             children: const [
               Image(
-                image: AssetImage('assets/images/launch_banner.png'),
+                image: AssetImage('assets/images/top_banner_beta.png'),
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),

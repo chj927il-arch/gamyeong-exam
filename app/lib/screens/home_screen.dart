@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../data/board_data.dart';
-import '../data/ox_quiz_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/launch_banner.dart';
 import '../widgets/rolling_banner.dart';
@@ -82,80 +81,17 @@ class _DailyOxBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final today = dailyOxQuizzes.first;
     return AspectRatio(
       aspectRatio: 1440 / 400,
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.ink, Color(0xFF232733)],
-          ),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DailyOxListScreen())),
-            child: Stack(
-              children: [
-                // 우측 대형 워터마크 O/X 그래픽
-                Positioned(
-                  right: -18,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: Text(
-                      'O X',
-                      style: TextStyle(
-                        color: AppColors.accentGold.withValues(alpha: 0.10),
-                        fontSize: 150,
-                        fontWeight: FontWeight.w900,
-                        height: 1,
-                        letterSpacing: 4,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: AppColors.accentGold.withValues(alpha: 0.16),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.accentGold.withValues(alpha: 0.4)),
-                        ),
-                        child: const Text('OX', style: TextStyle(color: AppColors.accentGold, fontWeight: FontWeight.w900, fontSize: 18)),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '데일리 OX 퀴즈 · ${today.date}',
-                              style: TextStyle(color: AppColors.accentGold.withValues(alpha: 0.9), fontSize: 12.5, fontWeight: FontWeight.w700),
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              '오늘의 과목별\nO/X 1문제 풀어보기',
-                              style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w800, height: 1.25),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Icon(Icons.chevron_right_rounded, color: AppColors.accentGold, size: 26),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DailyOxListScreen())),
+          child: const Image(
+            image: AssetImage('assets/images/daily_ox_banner.png'),
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
         ),
       ),

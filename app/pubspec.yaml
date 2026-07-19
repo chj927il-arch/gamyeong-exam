@@ -59,12 +59,13 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/launch_banner.png
     - assets/images/splash_cover.png
     - assets/images/rolling_banner_chapter.png
     - assets/images/top_banner_studybox.png
+    - assets/images/top_banner_beta.png
     - assets/images/rolling_banner_update.png
     - assets/images/rolling_banner_premium.png
+    - assets/images/daily_ox_banner.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
