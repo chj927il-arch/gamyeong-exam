@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-const double _kLaunchBannerAspectRatio = 1774 / 887;
+// 각 슬라이드 이미지의 실제 가로세로 비율 — 잘림 없이 원본 비율 그대로 보여준다.
+const _slideAspectRatios = [1536 / 1024, 1774 / 887];
+const _slideAssets = ['assets/images/top_banner_beta.png', 'assets/images/top_banner_studybox.png'];
 
 /// 앱 상단 프로모션 배너 — 실제 론칭 이미지와 STUDY BOX 홍보 슬라이드,
 /// 총 2개 화면을 자동으로 롤링하는 풀블리드 배너.
@@ -40,25 +42,20 @@ class _LaunchBannerState extends State<LaunchBanner> {
   @override
   Widget build(BuildContext context) {
     // 좌우 여백 없이 화면 폭 전체를 채우는 풀블리드 배너 — 라운드 처리하지 않는다.
+    // 슬라이드마다 원본 이미지 비율에 맞춰 높이를 조절해 잘림을 방지한다.
     return Column(
       children: [
         AspectRatio(
-          aspectRatio: _kLaunchBannerAspectRatio,
-          child: PageView(
+          aspectRatio: _slideAspectRatios[_page],
+          child: PageView.builder(
             controller: _controller,
             onPageChanged: (i) => setState(() => _page = i),
-            children: const [
-              Image(
-                image: AssetImage('assets/images/top_banner_beta.png'),
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-              Image(
-                image: AssetImage('assets/images/top_banner_studybox.png'),
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-            ],
+            itemCount: _slideCount,
+            itemBuilder: (context, i) => Image(
+              image: AssetImage(_slideAssets[i]),
+              fit: BoxFit.cover,
+              width: double.infinity,
+            ),
           ),
         ),
         const SizedBox(height: 8),

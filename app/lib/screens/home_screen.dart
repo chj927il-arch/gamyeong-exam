@@ -75,14 +75,14 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// 데일리 OX 퀴즈 배너 — 1440x400 비율의 전체 폭 그래픽 배너.
+/// 데일리 OX 퀴즈 배너 — 원본 이미지 비율(1774x887) 그대로, 전체 폭 그래픽 배너.
 class _DailyOxBanner extends StatelessWidget {
   const _DailyOxBanner();
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1440 / 400,
+      aspectRatio: 1774 / 887,
       child: Material(
         color: Colors.transparent,
         child: InkWell(

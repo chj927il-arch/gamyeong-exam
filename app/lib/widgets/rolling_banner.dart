@@ -62,8 +62,9 @@ class _RollingBannerState extends State<RollingBanner> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 126,
+        AspectRatio(
+          // 배너 이미지의 실제 비율(약 2172x724)에 맞춰 잘림 없이 표시한다.
+          aspectRatio: 2172 / 724,
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.banners.length,
