@@ -10,7 +10,7 @@ import 'mypage_screen.dart';
 import 'study_screen.dart';
 
 const double _kEncourageBarHeight = 24;
-const double _kTopNavHeight = 56;
+const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
 class _NavItem {
@@ -66,7 +66,7 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const titleBarHeight = 116.0;
+    const titleBarHeight = 84.0;
     final showEncourage = _tabIndex == 0;
 
     return Scaffold(
@@ -81,24 +81,24 @@ class _RootScreenState extends State<RootScreen> {
               AppBar(
                 toolbarHeight: titleBarHeight,
                 title: Padding(
-                  padding: const EdgeInsets.only(top: 16),
+                  padding: const EdgeInsets.only(top: 4),
                   child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       'STUDY BOX',
                       style: GoogleFonts.blackHanSans(
-                        fontSize: 46,
+                        fontSize: 34,
                         color: AppColors.textPrimary,
                         letterSpacing: 0.5,
                         height: 0.95,
                       ),
                     ),
                     Transform.translate(
-                      offset: const Offset(0, -10),
+                      offset: const Offset(0, -6),
                       child: const Text(
                         '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5, color: AppColors.textSecondary),
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.textSecondary),
                       ),
                     ),
                   ],
@@ -156,17 +156,17 @@ class _TopNavBar extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(selected ? item.selectedIcon : item.icon, size: 19, color: color),
-                    const SizedBox(height: 2),
+                    Icon(selected ? item.selectedIcon : item.icon, size: 17, color: color),
+                    const SizedBox(height: 1),
                     Text(
                       item.label,
                       style: TextStyle(
-                        fontSize: 10.5,
+                        fontSize: 10,
                         fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
                         color: color,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 3),
                     Container(
                       height: 2.5,
                       width: 28,
@@ -195,11 +195,12 @@ class _EncourageBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: _kEncourageBarHeight,
-      color: AppColors.primary,
+      color: const Color(0xFFFFC72C),
       child: const MarqueeText(
         text: '가맹거래사 합격을 응원합니다.',
-        style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+        style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: -0.3),
         height: _kEncourageBarHeight,
+        gap: 24,
       ),
     );
   }
