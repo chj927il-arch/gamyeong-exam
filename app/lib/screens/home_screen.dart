@@ -75,14 +75,14 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// 데일리 OX 퀴즈 배너 — 원본 이미지 비율(1774x887) 그대로, 잘림 없는 전체 폭 그래픽 배너.
+/// 데일리 OX 퀴즈 배너 — 모바일에 맞춰 여백을 넉넉히 준 와이드 이미지(3936x1088) 비율 그대로 표시.
 class _DailyOxBanner extends StatelessWidget {
   const _DailyOxBanner();
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1774 / 887,
+      aspectRatio: 3936 / 1088,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
