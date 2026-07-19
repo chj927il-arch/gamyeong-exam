@@ -20,19 +20,9 @@ class BannerItem {
 }
 
 const _defaultBanners = [
-  BannerItem(
-    title: '이번 주 신규\n유사문제 업데이트',
-    subtitle: '출제 비중 1위 약관법 문제가 추가됐어요',
-    icon: Icons.auto_awesome_outlined,
-    gradient: [Color(0xFFE8562F), Color(0xFFF4854A)],
-  ),
+  BannerItem(imageAsset: 'assets/images/rolling_banner_update.png'),
   BannerItem(imageAsset: 'assets/images/rolling_banner_chapter.png'),
-  BannerItem(
-    title: '프리미엄 전환하고\n전 과목 무제한 풀기',
-    subtitle: '경제법·민법·경영학 전 챕터 잠금 해제',
-    icon: Icons.workspace_premium_outlined,
-    gradient: [Color(0xFF3E4FA8), Color(0xFF6C7CD6)],
-  ),
+  BannerItem(imageAsset: 'assets/images/rolling_banner_premium.png'),
 ];
 
 /// 홈 상단 프로모션/광고 영역 — 3개 배너를 자동으로 롤링하는 캐러셀.

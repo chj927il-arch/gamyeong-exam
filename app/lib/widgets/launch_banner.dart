@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 const double _kLaunchBannerAspectRatio = 1774 / 887;
@@ -54,7 +53,11 @@ class _LaunchBannerState extends State<LaunchBanner> {
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
-              _StudyBoxPromoSlide(),
+              Image(
+                image: AssetImage('assets/images/top_banner_studybox.png'),
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
             ],
           ),
         ),
@@ -76,65 +79,6 @@ class _LaunchBannerState extends State<LaunchBanner> {
           }),
         ),
       ],
-    );
-  }
-}
-
-/// STUDY BOX 홍보 슬라이드 — 큰 타이포그래피 타이틀이 도드라지는 브랜드 배너.
-class _StudyBoxPromoSlide extends StatelessWidget {
-  const _StudyBoxPromoSlide();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF20416B), AppColors.primary, Color(0xFF0F2138)],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // 대각선 골드 액센트 글로우
-          Positioned(
-            right: -40,
-            top: -30,
-            child: Container(
-              width: 220,
-              height: 220,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.accentGold.withValues(alpha: 0.18),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'STUDY BOX',
-                  style: GoogleFonts.blackHanSans(
-                    color: Colors.white,
-                    fontSize: 44,
-                    letterSpacing: 0.5,
-                    height: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
-                  style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700, height: 1.3),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
