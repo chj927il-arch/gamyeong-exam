@@ -19,14 +19,17 @@ class HomeScreen extends StatelessWidget {
         // 배너는 좌우 여백 없이 화면 폭 전체를 채운다.
         const LaunchBanner(),
         const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: const RollingBanner(),
+        ),
+        const SizedBox(height: 20),
         const _DailyOxBanner(),
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              const RollingBanner(),
-              const SizedBox(height: 24),
               _BoardSection(
                 title: '이용후기',
                 icon: Icons.reviews_outlined,
