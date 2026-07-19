@@ -32,48 +32,73 @@ class SubjectChaptersScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: style.color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(style.icon, color: style.color, size: 24),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [style.color, style.color.withValues(alpha: 0.78)],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '$subjectName 챕터별 집중공략',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
-                        ),
-                        Text(
-                          isAnalyzed ? '기출 분석 기반 · 출제 비중 높은 순' : '기출 분석 준비 중 · 과목 대분류 순',
-                          style: const TextStyle(fontSize: 13.5, color: AppColors.textSecondary, fontWeight: FontWeight.w400),
-                        ),
-                        if (isAnalyzed && top3.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                            decoration: BoxDecoration(
-                              color: style.color.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              '출제 비중 1~3위: ${top3.map((s) => s.topic).join(' · ')}',
-                              style: TextStyle(fontSize: 12.5, color: style.color, fontWeight: FontWeight.w700, height: 1.4),
-                            ),
+                  boxShadow: [
+                    BoxShadow(color: style.color.withValues(alpha: 0.28), blurRadius: 20, offset: const Offset(0, 10)),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$subjectName 챕터별 집중공략',
+                      style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w900, color: Colors.white),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      isAnalyzed ? '기출 분석 기반 · 출제 비중 높은 순' : '기출 분석 준비 중 · 과목 대분류 순',
+                      style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.85), fontWeight: FontWeight.w500),
+                    ),
+                    if (isAnalyzed && top3.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      Container(height: 1, color: Colors.white.withValues(alpha: 0.2)),
+                      const SizedBox(height: 14),
+                      Text(
+                        '출제 비중 TOP 3',
+                        style: TextStyle(fontSize: 11.5, color: Colors.white.withValues(alpha: 0.75), fontWeight: FontWeight.w700, letterSpacing: 0.4),
+                      ),
+                      const SizedBox(height: 10),
+                      ...List.generate(top3.length, (i) {
+                        final stat = top3[i];
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: i == top3.length - 1 ? 0 : 8),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 22,
+                                height: 22,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.22), shape: BoxShape.circle),
+                                child: Text('${i + 1}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12)),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  stat.topic,
+                                  style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w700),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Text(
+                                '${(stat.ratio * 100).toStringAsFixed(1)}%',
+                                style: TextStyle(fontSize: 12.5, color: Colors.white.withValues(alpha: 0.85), fontWeight: FontWeight.w700),
+                              ),
+                            ],
                           ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
+                        );
+                      }),
+                    ],
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               if (chapters.isEmpty)

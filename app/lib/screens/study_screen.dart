@@ -80,14 +80,6 @@ class _SubjectCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            width: 26,
-                            height: 26,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(color: style.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
-                            child: Icon(style.icon, size: 15, color: style.color),
-                          ),
-                          const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               subject.name,

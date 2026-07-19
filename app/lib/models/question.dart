@@ -3,6 +3,10 @@ class Question {
   final String id;
   final String subjectId;
   final String category;
+
+  /// 같은 category(챕터) 안에서 세부 개념 단위로 묶어 반복 학습(듀오링고 방식)할 때 쓰는 하위 유형.
+  final String? subTopic;
+
   final String stem;
   final List<String> choices;
   final int correctIndex;
@@ -28,6 +32,7 @@ class Question {
     required this.id,
     required this.subjectId,
     required this.category,
+    this.subTopic,
     required this.stem,
     required this.choices,
     required this.correctIndex,

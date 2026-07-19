@@ -58,6 +58,23 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
+  /// 같은 subTopic(세부 유형) 안에서 현재 문제가 몇 번째인지 — 듀오링고 방식의 묶음 반복 학습 표시용.
+  int get _subTopicPosition {
+    final subTopic = _questions[_current].subTopic;
+    if (subTopic == null) return 0;
+    var pos = 0;
+    for (var i = 0; i <= _current; i++) {
+      if (_questions[i].subTopic == subTopic) pos++;
+    }
+    return pos;
+  }
+
+  int get _subTopicTotal {
+    final subTopic = _questions[_current].subTopic;
+    if (subTopic == null) return 0;
+    return _questions.where((q) => q.subTopic == subTopic).length;
+  }
+
   @override
   Widget build(BuildContext context) {
     final style = subjectStyleOf(widget.subjectId);
@@ -101,7 +118,12 @@ class _QuizScreenState extends State<QuizScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _QuestionCard(question: question, color: style.color),
+                      _QuestionCard(
+                        question: question,
+                        color: style.color,
+                        subTopicPosition: _subTopicPosition,
+                        subTopicTotal: _subTopicTotal,
+                      ),
                       const SizedBox(height: 20),
                       ...List.generate(question.choices.length, (i) {
                         return Padding(
@@ -202,8 +224,15 @@ class _ProgressHeader extends StatelessWidget {
 class _QuestionCard extends StatelessWidget {
   final Question question;
   final Color color;
+  final int subTopicPosition;
+  final int subTopicTotal;
 
-  const _QuestionCard({required this.question, required this.color});
+  const _QuestionCard({
+    required this.question,
+    required this.color,
+    this.subTopicPosition = 0,
+    this.subTopicTotal = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +255,10 @@ class _QuestionCard extends StatelessWidget {
               color: color.withValues(alpha: 0.08),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
             ),
-            child: Row(
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -236,13 +268,24 @@ class _QuestionCard extends StatelessWidget {
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12.5),
                   ),
                 ),
-                if (question.sourceYear != null) ...[
-                  const SizedBox(width: 8),
+                if (question.sourceYear != null)
                   Text(
                     '${question.sourceYear}년 기출',
                     style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 12),
                   ),
-                ],
+                if (question.subTopic != null && subTopicTotal > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: color.withValues(alpha: 0.3)),
+                    ),
+                    child: Text(
+                      '${question.subTopic} 집중 $subTopicPosition/$subTopicTotal',
+                      style: TextStyle(color: color, fontWeight: FontWeight.w800, fontSize: 11),
+                    ),
+                  ),
               ],
             ),
           ),
