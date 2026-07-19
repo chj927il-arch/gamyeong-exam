@@ -68,44 +68,48 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     const titleBarHeight = 84.0;
     final showEncourage = _tabIndex == 0;
+    final showTitle = _tabIndex == 0;
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight((showEncourage ? _kEncourageBarHeight : 0) + titleBarHeight),
+        preferredSize: Size.fromHeight(
+          (showEncourage ? _kEncourageBarHeight : 0) + (showTitle ? titleBarHeight : 0),
+        ),
         child: SafeArea(
           bottom: false,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (showEncourage) const _EncourageBar(),
-              AppBar(
-                toolbarHeight: titleBarHeight,
-                title: Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'STUDY BOX',
-                      style: GoogleFonts.blackHanSans(
-                        fontSize: 34,
-                        color: AppColors.textPrimary,
-                        letterSpacing: 0.5,
-                        height: 0.95,
+              if (showTitle)
+                AppBar(
+                  toolbarHeight: titleBarHeight,
+                  title: Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'STUDY BOX',
+                        style: GoogleFonts.blackHanSans(
+                          fontSize: 34,
+                          color: AppColors.textPrimary,
+                          letterSpacing: 0.5,
+                          height: 0.95,
+                        ),
                       ),
-                    ),
-                    Transform.translate(
-                      offset: const Offset(0, -6),
-                      child: const Text(
-                        '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.textSecondary),
+                      Transform.translate(
+                        offset: const Offset(0, -6),
+                        child: const Text(
+                          '바쁜 일상, 가장 스마트하게, 가장 콤팩트하게.',
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: AppColors.textSecondary),
+                        ),
                       ),
+                    ],
                     ),
-                  ],
                   ),
+                  centerTitle: true,
                 ),
-                centerTitle: true,
-              ),
             ],
           ),
         ),
@@ -198,7 +202,7 @@ class _EncourageBar extends StatelessWidget {
       color: const Color(0xFFFFC72C),
       child: const MarqueeText(
         text: '가맹거래사 합격을 응원합니다.',
-        style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: -0.3),
+        style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: -0.3),
         height: _kEncourageBarHeight,
         gap: 24,
       ),
