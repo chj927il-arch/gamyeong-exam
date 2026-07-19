@@ -61,6 +61,7 @@ flutter:
   assets:
     - assets/images/launch_banner.png
     - assets/images/splash_cover.png
+    - assets/images/rolling_banner_chapter.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

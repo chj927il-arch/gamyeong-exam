@@ -7,6 +7,7 @@ import '../widgets/rolling_banner.dart';
 import 'daily_ox_list_screen.dart';
 import 'faq_screen.dart';
 import 'notice_screen.dart';
+import 'review_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -27,6 +28,21 @@ class HomeScreen extends StatelessWidget {
             children: [
               const RollingBanner(),
               const SizedBox(height: 24),
+              _BoardSection(
+                title: '이용후기',
+                icon: Icons.reviews_outlined,
+                headerColor: AppColors.correct,
+                onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ReviewScreen())),
+                rows: reviews
+                    .take(3)
+                    .map((r) => _BoardRow(
+                          leading: r.isNew ? '[NEW] ' : null,
+                          title: r.title,
+                          trailing: r.date,
+                        ))
+                    .toList(),
+              ),
+              const SizedBox(height: 20),
               _BoardSection(
                 title: '공지사항',
                 icon: Icons.campaign_outlined,

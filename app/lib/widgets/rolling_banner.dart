@@ -4,16 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class BannerItem {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final List<Color> gradient;
+  final String? title;
+  final String? subtitle;
+  final IconData? icon;
+  final List<Color>? gradient;
+  final String? imageAsset;
 
   const BannerItem({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.gradient,
+    this.title,
+    this.subtitle,
+    this.icon,
+    this.gradient,
+    this.imageAsset,
   });
 }
 
@@ -24,12 +26,7 @@ const _defaultBanners = [
     icon: Icons.auto_awesome_outlined,
     gradient: [Color(0xFFE8562F), Color(0xFFF4854A)],
   ),
-  BannerItem(
-    title: '오늘의 추천 챕터',
-    subtitle: '공정위 조직·절차, 최근 10년간 두 번째로 많이 출제',
-    icon: Icons.local_fire_department_outlined,
-    gradient: [Color(0xFF0E8F6F), Color(0xFF2CB491)],
-  ),
+  BannerItem(imageAsset: 'assets/images/rolling_banner_chapter.png'),
   BannerItem(
     title: '프리미엄 전환하고\n전 과목 무제한 풀기',
     subtitle: '경제법·민법·경영학 전 챕터 잠금 해제',
@@ -112,6 +109,13 @@ class _BannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (item.imageAsset != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: Image.asset(item.imageAsset!, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       decoration: BoxDecoration(
@@ -119,7 +123,7 @@ class _BannerCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: item.gradient,
+          colors: item.gradient!,
         ),
       ),
       child: Row(
@@ -131,7 +135,7 @@ class _BannerCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  item.title,
+                  item.title!,
                   style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 22, height: 1.15, letterSpacing: 0.2),
                 ),
                 const SizedBox(height: 6),
@@ -141,7 +145,7 @@ class _BannerCard extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      item.subtitle,
+                      item.subtitle!,
                       maxLines: 1,
                       softWrap: false,
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 13, fontWeight: FontWeight.w600, height: 1.2),
@@ -156,7 +160,7 @@ class _BannerCard extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.22), shape: BoxShape.circle),
-            child: Icon(item.icon, color: Colors.white, size: 18),
+            child: Icon(item.icon!, color: Colors.white, size: 18),
           ),
         ],
       ),
