@@ -72,10 +72,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: _MotivationStrip(),
-        ),
+        const _MotivationStrip(),
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -98,9 +95,8 @@ class _MotivationStrip extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 1280 / 200,
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: const LinearGradient(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [AppColors.primary, Color(0xFF7B3FE4)],
@@ -122,9 +118,10 @@ class _MotivationStrip extends StatelessWidget {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 21,
                 fontWeight: FontWeight.w900,
-                height: 1.4,
+                height: 1.35,
+                letterSpacing: -0.2,
               ),
             ),
           ),

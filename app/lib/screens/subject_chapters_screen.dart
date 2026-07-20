@@ -20,7 +20,10 @@ class SubjectChaptersScreen extends StatelessWidget {
     final style = subjectStyleOf(subjectId);
     final chapters = chapterStatsFor(subjectId);
     final isAnalyzed = subjectStatsIsAnalyzed[subjectId] ?? false;
-    final top3 = chapters.take(3).toList();
+    final top3Ratio = chapters.take(3).fold(0.0, (sum, c) => sum + c.ratio);
+    final trendText = isAnalyzed && chapters.isNotEmpty
+        ? '최근 11개년 기출 기준 "${chapters.first.topic}"이(가) ${(chapters.first.ratio * 100).toStringAsFixed(1)}%로 가장 많이 출제되었고, 상위 3개 챕터가 전체 출제의 ${(top3Ratio * 100).toStringAsFixed(1)}%를 차지합니다. 아래 목록 순서대로 학습하면 효율이 가장 좋아요.'
+        : '기출 분석이 준비되는 대로 출제경향을 알려드릴게요.';
 
     return Scaffold(
       appBar: AppBar(
@@ -58,45 +61,18 @@ class SubjectChaptersScreen extends StatelessWidget {
                       isAnalyzed ? '기출 분석 기반 · 출제 비중 높은 순' : '기출 분석 준비 중 · 과목 대분류 순',
                       style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.85), fontWeight: FontWeight.w500),
                     ),
-                    if (isAnalyzed && top3.isNotEmpty) ...[
-                      const SizedBox(height: 16),
-                      Container(height: 1, color: Colors.white.withValues(alpha: 0.2)),
-                      const SizedBox(height: 14),
-                      Text(
-                        '출제 비중 TOP 3',
-                        style: TextStyle(fontSize: 11.5, color: Colors.white.withValues(alpha: 0.75), fontWeight: FontWeight.w700, letterSpacing: 0.4),
-                      ),
-                      const SizedBox(height: 10),
-                      ...List.generate(top3.length, (i) {
-                        final stat = top3[i];
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: i == top3.length - 1 ? 0 : 8),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 22,
-                                height: 22,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.22), shape: BoxShape.circle),
-                                child: Text('${i + 1}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12)),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  stat.topic,
-                                  style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w700),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Text(
-                                '${(stat.ratio * 100).toStringAsFixed(1)}%',
-                                style: TextStyle(fontSize: 12.5, color: Colors.white.withValues(alpha: 0.85), fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ],
+                    const SizedBox(height: 16),
+                    Container(height: 1, color: Colors.white.withValues(alpha: 0.2)),
+                    const SizedBox(height: 14),
+                    Text(
+                      '출제경향',
+                      style: TextStyle(fontSize: 11.5, color: Colors.white.withValues(alpha: 0.75), fontWeight: FontWeight.w700, letterSpacing: 0.4),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      trendText,
+                      style: const TextStyle(fontSize: 13.5, color: Colors.white, fontWeight: FontWeight.w600, height: 1.55),
+                    ),
                   ],
                 ),
               ),

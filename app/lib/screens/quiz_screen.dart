@@ -9,6 +9,15 @@ import '../widgets/highlighted_text.dart';
 
 const _optionLabels = ['A', 'B', 'C', 'D', 'E'];
 
+/// 10문제마다 보여줄 자극 문구 — 듀오링고식 반복학습의 마일스톤 연출.
+const _milestoneMessages = [
+  '벌써 10문제! 이 페이스 그대로 가봐요 🔥',
+  '힘내세요! 합격이 점점 가까워지고 있습니다.',
+  '꾸준함이 곧 실력입니다. 계속 가볼까요?',
+  '오늘도 한 걸음 더! 다음 10문제도 화이팅.',
+  '집중력 최고예요. 이대로만 쭉 가요!',
+];
+
 class QuizScreen extends StatefulWidget {
   final String subjectId;
   final String subjectName;
@@ -48,6 +57,26 @@ class _QuizScreenState extends State<QuizScreen> {
       _answered = true;
       _solvedInSession++;
     });
+    if (_solvedInSession % 10 == 0) {
+      final message = _milestoneMessages[(_solvedInSession ~/ 10 - 1) % _milestoneMessages.length];
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _showMilestone(message);
+      });
+    }
+  }
+
+  void _showMilestone(String message) {
+    final style = subjectStyleOf(widget.subjectId);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => _MilestoneDialog(
+        count: _solvedInSession,
+        message: message,
+        color: style.color,
+        onContinue: () => Navigator.of(dialogContext).pop(),
+      ),
+    );
   }
 
   void _next() {
@@ -524,6 +553,77 @@ class _FeedbackPanel extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// 10문제 달성마다 뜨는 응원 다이얼로그 — 듀오링고식 반복학습 마일스톤 연출.
+class _MilestoneDialog extends StatelessWidget {
+  final int count;
+  final String message;
+  final Color color;
+  final VoidCallback onContinue;
+
+  const _MilestoneDialog({
+    required this.count,
+    required this.message,
+    required this.color,
+    required this.onContinue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 30, offset: const Offset(0, 12)),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(colors: [color, color.withValues(alpha: 0.7)]),
+              ),
+              child: const Icon(Icons.local_fire_department_rounded, color: Colors.white, size: 34),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '$count문제 달성!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: color),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14.5, height: 1.5, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 22),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: color,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                onPressed: onContinue,
+                child: const Text('계속 풀기'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
