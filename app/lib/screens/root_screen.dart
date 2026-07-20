@@ -9,7 +9,7 @@ import 'home_screen.dart';
 import 'mypage_screen.dart';
 import 'study_screen.dart';
 
-const double _kEncourageBarHeight = 24;
+const double _kEncourageBarHeight = 30;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
@@ -212,7 +212,7 @@ class _EncourageBar extends StatelessWidget {
       color: const Color(0xFFFFC72C),
       child: MarqueeText(
         text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
-        style: GoogleFonts.blackHanSans(color: Colors.black, fontSize: 13, letterSpacing: -0.2),
+        style: GoogleFonts.blackHanSans(color: Colors.black, fontSize: 17, letterSpacing: -0.2),
         height: _kEncourageBarHeight,
         gap: 24,
       ),

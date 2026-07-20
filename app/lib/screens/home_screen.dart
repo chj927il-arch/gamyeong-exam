@@ -20,17 +20,22 @@ class HomeScreen extends StatelessWidget {
         // 배너는 좌우 여백 없이 화면 폭 전체를 채운다.
         const LaunchBanner(),
         const SizedBox(height: 20),
-        const _DailyOxBanner(),
-        const SizedBox(height: 24),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-          child: _SectionTitle(),
+          child: _SectionTitle(prefix: 'STUDY BOX ', highlight: '콘텐츠', color: AppColors.correct),
         ),
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: const RollingBanner(),
         ),
+        const SizedBox(height: 24),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: _SectionTitle(prefix: '오늘의 ', highlight: 'OX 퀴즈', color: AppColors.accentPurple),
+        ),
+        const SizedBox(height: 10),
+        const _DailyOxBanner(),
         const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -131,21 +136,24 @@ class _MotivationStrip extends StatelessWidget {
   }
 }
 
-/// "STUDY BOX 콘텐츠" 섹션 타이틀 — 뒷부분 단어만 색상으로 강조(테두리 박스 없음).
+/// "STUDY BOX 콘텐츠" 스타일의 섹션 타이틀 — 뒷부분 단어만 색상으로 강조(테두리 박스 없음).
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle();
+  final String prefix;
+  final String highlight;
+  final Color color;
+  const _SectionTitle({required this.prefix, required this.highlight, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
+      children: [
         Text(
-          'STUDY BOX ',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+          prefix,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
         ),
         Text(
-          '콘텐츠',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.correct),
+          highlight,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: color),
         ),
       ],
     );
