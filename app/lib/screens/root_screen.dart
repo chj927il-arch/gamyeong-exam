@@ -13,8 +13,8 @@ const double _kEncourageBarHeight = 24;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
-const double _kBottomBarHeight = 58;
-const double _kStudyButtonSize = 62;
+const double _kBottomBarHeight = 44;
+const double _kStudyButtonSize = 56;
 const int _kStudyTabIndex = 3;
 
 class _NavItem {
@@ -210,9 +210,9 @@ class _EncourageBar extends StatelessWidget {
       width: double.infinity,
       height: _kEncourageBarHeight,
       color: const Color(0xFFFFC72C),
-      child: const MarqueeText(
+      child: MarqueeText(
         text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
-        style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: -0.3),
+        style: GoogleFonts.blackHanSans(color: Colors.black, fontSize: 13, letterSpacing: -0.2),
         height: _kEncourageBarHeight,
         gap: 24,
       ),
@@ -242,42 +242,37 @@ class _BottomStudyBar extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: _kBottomBarHeight - _kStudyButtonSize / 2 - 6,
+            bottom: _kBottomBarHeight - _kStudyButtonSize / 2 - 4,
             child: GestureDetector(
               onTap: onTap,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: _kStudyButtonSize,
-                    height: _kStudyButtonSize,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: selected
-                            ? [AppColors.accentGold, const Color(0xFFDBA53F)]
-                            : [AppColors.primary, const Color(0xFF3E6FB0)],
-                      ),
-                      border: Border.all(color: AppColors.bgBase, width: 4),
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withValues(alpha: 0.22), blurRadius: 14, offset: const Offset(0, 6)),
-                      ],
-                    ),
-                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 30),
+              child: Container(
+                width: _kStudyButtonSize,
+                height: _kStudyButtonSize,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: selected
+                        ? [AppColors.accentGold, const Color(0xFFDBA53F)]
+                        : [AppColors.primary, const Color(0xFF3E6FB0)],
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '학습하기',
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w800,
-                      color: selected ? AppColors.accentGold : AppColors.primary,
+                  border: Border.all(color: AppColors.bgBase, width: 4),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.22), blurRadius: 14, offset: const Offset(0, 6)),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.edit_note_rounded, color: Colors.white, size: 20),
+                    Text(
+                      '학습하기',
+                      style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.white),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 /// 위젯(카드 등)을 옆으로 끊김 없이 계속 흘려보내는 롤링 스트립.
-/// [MarqueeText]와 동일한 측정 방식을 위젯 전반에 적용한 범용 버전.
+/// [itemBuilder]는 한 사이클 분량의 콘텐츠를 만들며, 내부적으로 두 벌을 이어붙여
+/// 스크롤 위치가 한 사이클만큼 이동하면 처음으로 되돌리는 방식(무한 루프처럼 보임)으로 흘려보낸다.
 class MarqueeRow extends StatefulWidget {
-  final Widget child;
+  final WidgetBuilder itemBuilder;
   final double height;
   final double pixelsPerSecond;
 
   const MarqueeRow({
     super.key,
-    required this.child,
+    required this.itemBuilder,
     required this.height,
     this.pixelsPerSecond = 36,
   });
@@ -20,8 +21,9 @@ class MarqueeRow extends StatefulWidget {
 
 class _MarqueeRowState extends State<MarqueeRow> with SingleTickerProviderStateMixin {
   final GlobalKey _measureKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
   late final AnimationController _controller;
-  double? _unitWidth;
+  double? _cycleWidth;
 
   @override
   void initState() {
@@ -36,62 +38,47 @@ class _MarqueeRowState extends State<MarqueeRow> with SingleTickerProviderStateM
     final width = box.size.width;
     if (!mounted) return;
     final seconds = (width / widget.pixelsPerSecond).clamp(4.0, 120.0);
-    setState(() {
-      _unitWidth = width;
-      _controller.duration = Duration(milliseconds: (seconds * 1000).round());
-      _controller.repeat();
+    _controller.duration = Duration(milliseconds: (seconds * 1000).round());
+    _controller.addListener(() {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_controller.value * width);
+      }
     });
+    setState(() => _cycleWidth = width);
+    _controller.repeat();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final unit = _unitWidth;
+    final cycleWidth = _cycleWidth;
 
-    return ClipRect(
-      child: SizedBox(
-        height: widget.height,
-        width: double.infinity,
-        child: Stack(
-          clipBehavior: Clip.hardEdge,
-          children: [
-            if (unit == null)
+    return SizedBox(
+      height: widget.height,
+      width: double.infinity,
+      child: cycleWidth == null
+          ? Opacity(
               // 최초 1회, 화면에 보이지 않게 실제 렌더 크기를 측정하기 위한 패스
-              Opacity(
-                opacity: 0,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: KeyedSubtree(key: _measureKey, child: widget.child),
-                ),
-              )
-            else
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  final dx = -_controller.value * unit;
-                  return Stack(
-                    clipBehavior: Clip.hardEdge,
-                    children: [
-                      for (final offset in [dx, dx + unit, dx + unit * 2])
-                        Positioned(
-                          left: offset,
-                          top: 0,
-                          bottom: 0,
-                          child: Align(alignment: Alignment.centerLeft, child: child),
-                        ),
-                    ],
-                  );
-                },
-                child: widget.child,
+              opacity: 0,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: KeyedSubtree(key: _measureKey, child: widget.itemBuilder(context)),
               ),
-          ],
-        ),
-      ),
+            )
+          : SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
+              child: Row(
+                children: [widget.itemBuilder(context), widget.itemBuilder(context)],
+              ),
+            ),
     );
   }
 }
