@@ -13,19 +13,24 @@ const double _kEncourageBarHeight = 24;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
+const double _kBottomBarHeight = 58;
+const double _kStudyButtonSize = 62;
+const int _kStudyTabIndex = 3;
+
 class _NavItem {
   final IconData icon;
   final IconData selectedIcon;
   final String label;
-  const _NavItem(this.icon, this.selectedIcon, this.label);
+  final int tabIndex;
+  const _NavItem(this.icon, this.selectedIcon, this.label, this.tabIndex);
 }
 
+/// 상단 메뉴 — 학습하기는 하단 중앙의 볼록 버튼으로 뺐으므로 나머지 4개만 노출한다.
 const _navItems = [
-  _NavItem(Icons.home_outlined, Icons.home, '홈'),
-  _NavItem(Icons.info_outline_rounded, Icons.info_rounded, '시험소개'),
-  _NavItem(Icons.menu_book_outlined, Icons.menu_book_rounded, '시험과목'),
-  _NavItem(Icons.edit_note_outlined, Icons.edit_note_rounded, '학습하기'),
-  _NavItem(Icons.person_outline_rounded, Icons.person_rounded, '마이페이지'),
+  _NavItem(Icons.home_outlined, Icons.home, '홈', 0),
+  _NavItem(Icons.info_outline_rounded, Icons.info_rounded, '시험소개', 1),
+  _NavItem(Icons.menu_book_outlined, Icons.menu_book_rounded, '시험과목', 2),
+  _NavItem(Icons.person_outline_rounded, Icons.person_rounded, '마이페이지', 4),
 ];
 
 class RootScreen extends StatefulWidget {
@@ -116,6 +121,7 @@ class _RootScreenState extends State<RootScreen> {
       ),
       body: AppBackground(
         child: SafeArea(
+          bottom: false,
           child: Column(
             children: [
               _TopNavBar(selectedIndex: _tabIndex, onSelected: _onDestinationSelected),
@@ -128,6 +134,10 @@ class _RootScreenState extends State<RootScreen> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: _BottomStudyBar(
+        selected: _tabIndex == _kStudyTabIndex,
+        onTap: () => _onDestinationSelected(_kStudyTabIndex),
       ),
     );
   }
@@ -150,13 +160,13 @@ class _TopNavBar extends StatelessWidget {
       child: Row(
         children: List.generate(_navItems.length, (i) {
           final item = _navItems[i];
-          final selected = i == selectedIndex;
+          final selected = item.tabIndex == selectedIndex;
           final color = selected ? AppColors.primary : AppColors.textMuted;
           return Expanded(
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () => onSelected(i),
+                onTap: () => onSelected(item.tabIndex),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -201,10 +211,77 @@ class _EncourageBar extends StatelessWidget {
       height: _kEncourageBarHeight,
       color: const Color(0xFFFFC72C),
       child: const MarqueeText(
-        text: '가맹거래사 합격을 응원합니다.',
+        text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
         style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: -0.3),
         height: _kEncourageBarHeight,
         gap: 24,
+      ),
+    );
+  }
+}
+
+/// 하단 바 — 가운데에 "학습하기" 버튼이 오락기처럼 볼록 튀어나온 형태.
+class _BottomStudyBar extends StatelessWidget {
+  final bool selected;
+  final VoidCallback onTap;
+  const _BottomStudyBar({required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: _kBottomBarHeight + _kStudyButtonSize / 2,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.bottomCenter,
+        children: [
+          Container(
+            height: _kBottomBarHeight,
+            decoration: BoxDecoration(
+              color: AppColors.bgBase,
+              border: Border(top: BorderSide(color: AppColors.glassBorder.withValues(alpha: 0.8))),
+            ),
+          ),
+          Positioned(
+            bottom: _kBottomBarHeight - _kStudyButtonSize / 2 - 6,
+            child: GestureDetector(
+              onTap: onTap,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: _kStudyButtonSize,
+                    height: _kStudyButtonSize,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: selected
+                            ? [AppColors.accentGold, const Color(0xFFDBA53F)]
+                            : [AppColors.primary, const Color(0xFF3E6FB0)],
+                      ),
+                      border: Border.all(color: AppColors.bgBase, width: 4),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.22), blurRadius: 14, offset: const Offset(0, 6)),
+                      ],
+                    ),
+                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 30),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '학습하기',
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w800,
+                      color: selected ? AppColors.accentGold : AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

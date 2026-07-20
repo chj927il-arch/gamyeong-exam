@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/board_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/launch_banner.dart';
+import '../widgets/marquee_row.dart';
 import '../widgets/rolling_banner.dart';
 import 'daily_ox_list_screen.dart';
 import 'faq_screen.dart';
@@ -18,33 +19,49 @@ class HomeScreen extends StatelessWidget {
       children: [
         // 배너는 좌우 여백 없이 화면 폭 전체를 채운다.
         const LaunchBanner(),
-        const SizedBox(height: 12),
+        const SizedBox(height: 20),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: _SectionTitle(),
+        ),
+        const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: const RollingBanner(),
         ),
         const SizedBox(height: 20),
         const _DailyOxBanner(),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  '수강후기',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('후기 작성 기능은 준비 중이에요.')),
+                  );
+                },
+                icon: const Icon(Icons.edit_outlined, size: 16),
+                label: const Text('작성하기'),
+                style: TextButton.styleFrom(foregroundColor: AppColors.correct),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        const _ReviewCarousel(),
+        const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              _BoardSection(
-                title: '이용후기',
-                icon: Icons.reviews_outlined,
-                headerColor: AppColors.correct,
-                onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ReviewScreen())),
-                rows: reviews
-                    .take(3)
-                    .map((r) => _BoardRow(
-                          leading: r.isNew ? '[NEW] ' : null,
-                          title: r.title,
-                          trailing: r.date,
-                        ))
-                    .toList(),
-              ),
-              const SizedBox(height: 20),
               _BoardSection(
                 title: '공지사항',
                 icon: Icons.campaign_outlined,
@@ -78,6 +95,34 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+/// "STUDY BOX 콘텐츠" 섹션 타이틀 — 뒷부분 단어에 하이라이트 박스를 준다.
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Text(
+          'STUDY BOX ',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: AppColors.correct.withValues(alpha: 0.16),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: const Text(
+            '콘텐츠',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.correct),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// 데일리 OX 퀴즈 배너 — 모바일에 맞춰 여백을 넉넉히 준 와이드 이미지(3936x1088) 비율 그대로 표시.
 class _DailyOxBanner extends StatelessWidget {
   const _DailyOxBanner();
@@ -96,6 +141,88 @@ class _DailyOxBanner extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 수강후기 — 5개 카드가 여백 없이 옆으로 계속 흘러가는 롤링 스트립.
+class _ReviewCarousel extends StatelessWidget {
+  const _ReviewCarousel();
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = List.generate(5, (i) => reviews[i % reviews.length]);
+
+    return MarqueeRow(
+      height: 132,
+      pixelsPerSecond: 32,
+      child: Row(
+        children: [
+          for (final review in cards) ...[
+            _ReviewMiniCard(review: review),
+            const SizedBox(width: 12),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ReviewMiniCard extends StatelessWidget {
+  final ReviewItem review;
+  const _ReviewMiniCard({required this.review});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ReviewScreen())),
+      child: Container(
+        width: 220,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.glassBorder),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 6)),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: List.generate(
+                5,
+                (i) => Icon(
+                  i < review.rating ? Icons.star_rounded : Icons.star_outline_rounded,
+                  size: 14,
+                  color: AppColors.accentGold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              review.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.textPrimary, height: 1.3),
+            ),
+            const SizedBox(height: 6),
+            Expanded(
+              child: Text(
+                review.body,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 11.5, color: AppColors.textSecondary, fontWeight: FontWeight.w500, height: 1.35),
+              ),
+            ),
+            Text(
+              review.date,
+              style: const TextStyle(fontSize: 10.5, color: AppColors.textMuted, fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
     );
