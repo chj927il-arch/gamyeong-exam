@@ -13,8 +13,8 @@ const double _kEncourageBarHeight = 24;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
-const double _kBottomBarHeight = 44;
-const double _kStudyButtonSize = 56;
+const double _kStudyButtonSize = 72;
+const double _kBottomBarHeight = _kStudyButtonSize / 2;
 const int _kStudyTabIndex = 3;
 
 class _NavItem {
@@ -242,7 +242,7 @@ class _BottomStudyBar extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: _kBottomBarHeight - _kStudyButtonSize / 2 - 4,
+            bottom: 0,
             child: GestureDetector(
               onTap: onTap,
               child: Container(
@@ -266,10 +266,10 @@ class _BottomStudyBar extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: const [
-                    Icon(Icons.edit_note_rounded, color: Colors.white, size: 20),
+                    Icon(Icons.edit_note_rounded, color: Colors.white, size: 26),
                     Text(
                       '학습하기',
-                      style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.white),
+                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Colors.white),
                     ),
                   ],
                 ),

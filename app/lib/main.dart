@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
-void main() {
+void main() async {
+  // 폰트가 늦게 로드되면 마키(ticker) 위젯들이 초기 측정 이후 폭이 달라져
+  // 텍스트가 겹쳐 보이는 문제가 있어, 첫 프레임 전에 폰트를 미리 받아둔다.
+  WidgetsFlutterBinding.ensureInitialized();
+  // 실제로 쓰는 폰트를 한 번 참조해야 로딩이 트리거된다.
+  GoogleFonts.blackHanSans();
+  GoogleFonts.ibmPlexSansKr();
+  await GoogleFonts.pendingFonts();
   runApp(const GamyeongExamApp());
 }
 
