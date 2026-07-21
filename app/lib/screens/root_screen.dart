@@ -13,8 +13,9 @@ const double _kEncourageBarHeight = 30;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
-const double _kStudyButtonSize = 72;
-const double _kBottomBarHeight = _kStudyButtonSize / 2;
+const double _kStudyButtonWidth = 128;
+const double _kStudyButtonHeight = 54;
+const double _kBottomBarHeight = 50;
 const int _kStudyTabIndex = 3;
 
 class _NavItem {
@@ -201,6 +202,7 @@ class _TopNavBar extends StatelessWidget {
 }
 
 /// 상단 타이틀 위에 표시되는 얇은 응원 문구 바 — 증권 시세바처럼 계속 흘러간다.
+/// 브랜드 네이비 배경 + 골드 텍스트로, 앱 전체 색상 톤과 어울리도록 구성.
 class _EncourageBar extends StatelessWidget {
   const _EncourageBar();
 
@@ -209,10 +211,10 @@ class _EncourageBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: _kEncourageBarHeight,
-      color: const Color(0xFFFFC72C),
+      color: AppColors.primary,
       child: MarqueeText(
         text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
-        style: GoogleFonts.blackHanSans(color: Colors.black, fontSize: 17, letterSpacing: -0.2),
+        style: GoogleFonts.blackHanSans(color: AppColors.accentGold, fontSize: 13.5, letterSpacing: -0.1),
         height: _kEncourageBarHeight,
         gap: 24,
       ),
@@ -220,7 +222,8 @@ class _EncourageBar extends StatelessWidget {
   }
 }
 
-/// 하단 바 — 가운데에 "학습하기" 버튼이 오락기처럼 볼록 튀어나온 형태.
+/// 하단 바 — 가운데에 "학습하기" 알약(pill)형 버튼이 살짝 떠 있는 형태.
+/// 앱 전체가 둥근 사각형(카드·버튼) 언어를 쓰는데 원형만 튀어서, 같은 라운드 사각형 톤으로 맞췄다.
 class _BottomStudyBar extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
@@ -229,7 +232,7 @@ class _BottomStudyBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: _kBottomBarHeight + _kStudyButtonSize / 2,
+      height: _kBottomBarHeight + _kStudyButtonHeight / 2,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.bottomCenter,
@@ -243,35 +246,41 @@ class _BottomStudyBar extends StatelessWidget {
           ),
           Positioned(
             bottom: 0,
-            child: GestureDetector(
-              onTap: onTap,
-              child: Container(
-                width: _kStudyButtonSize,
-                height: _kStudyButtonSize,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: selected
-                        ? [AppColors.accentGold, const Color(0xFFDBA53F)]
-                        : [AppColors.primary, const Color(0xFF3E6FB0)],
-                  ),
-                  border: Border.all(color: AppColors.bgBase, width: 4),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black.withValues(alpha: 0.22), blurRadius: 14, offset: const Offset(0, 6)),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.edit_note_rounded, color: Colors.white, size: 26),
-                    Text(
-                      '학습하기',
-                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, color: Colors.white),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(18),
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(18),
+                child: Container(
+                  width: _kStudyButtonWidth,
+                  height: _kStudyButtonHeight,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: selected
+                          ? [AppColors.accentGold, const Color(0xFFDBA53F)]
+                          : [AppColors.primary, const Color(0xFF3E6FB0)],
                     ),
-                  ],
+                    border: Border.all(color: AppColors.bgBase, width: 3),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.20), blurRadius: 14, offset: const Offset(0, 6)),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.edit_note_rounded, color: Colors.white, size: 22),
+                      SizedBox(width: 6),
+                      Text(
+                        '학습하기',
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
