@@ -202,7 +202,7 @@ class _TopNavBar extends StatelessWidget {
 }
 
 /// 상단 타이틀 위에 표시되는 얇은 응원 문구 바 — 증권 시세바처럼 계속 흘러간다.
-/// 브랜드 네이비 배경 + 골드 텍스트로, 앱 전체 색상 톤과 어울리도록 구성.
+/// 브랜드 네이비 배경 + 흰색 텍스트로, 앱 전체 색상 톤과 어울리도록 구성.
 class _EncourageBar extends StatelessWidget {
   const _EncourageBar();
 
@@ -214,7 +214,7 @@ class _EncourageBar extends StatelessWidget {
       color: AppColors.primary,
       child: MarqueeText(
         text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
-        style: GoogleFonts.blackHanSans(color: AppColors.accentGold, fontSize: 13.5, letterSpacing: -0.1),
+        style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 13.5, letterSpacing: -0.1),
         height: _kEncourageBarHeight,
         gap: 24,
       ),
