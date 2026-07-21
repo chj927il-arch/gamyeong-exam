@@ -3,11 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gamyeong_exam/main.dart';
 
 void main() {
-  testWidgets('홈 화면에 과목 목록이 표시된다', (WidgetTester tester) async {
+  testWidgets('스플래시 이후 홈 화면 타이틀이 표시된다', (WidgetTester tester) async {
     await tester.pumpWidget(const GamyeongExamApp());
 
-    expect(find.text('경제법'), findsOneWidget);
-    expect(find.text('민법'), findsOneWidget);
-    expect(find.text('경영학'), findsOneWidget);
+    // 스플래시 화면의 1초 지연 + 전환 애니메이션이 끝날 때까지 진행시킨다.
+    await tester.pump(const Duration(milliseconds: 1100));
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('STUDY BOX'), findsOneWidget);
   });
 }

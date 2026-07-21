@@ -1,3 +1,5 @@
+import 'user_progress.dart';
+
 /// 학습 이력 목업 데이터 (실 학습 데이터 연동 전, 홈 대시보드 확인용)
 class DailyActivity {
   final String label; // 요일
@@ -7,14 +9,16 @@ class DailyActivity {
 }
 
 class StudyStats {
+  // 연속 학습일·주간활동 그래프는 날짜별 이력 저장이 필요해 아직 목업 유지.
   static const int streakDays = 3;
-  static const int todaySolved = 12;
   static const int todayGoal = 20;
-  static const int todayMinutes = 34;
 
-  static const int totalSolved = 428;
-  static const int totalMinutes = 1260; // 총 누적 학습 시간(분)
-  static const double totalAccuracy = 0.78;
+  static int get todaySolved => UserProgress.instance.todaySolved;
+  static int get todayMinutes => UserProgress.instance.todayStudySeconds ~/ 60;
+
+  static int get totalSolved => UserProgress.instance.totalSolved;
+  static int get totalMinutes => UserProgress.instance.totalStudySeconds ~/ 60;
+  static double get totalAccuracy => UserProgress.instance.totalAccuracy;
 
   /// 최근 7일 학습 시간(분) — 오늘 포함, 과거 → 오늘 순서
   static const List<DailyActivity> weeklyActivity = [
@@ -48,7 +52,7 @@ const Map<String, int> mockSubjectTodaySolved = {
   'business_admin': 1,
 };
 
-/// 학습 리포트용 — 과목별 가장 취약한 챕터 목업 (실 채점 데이터 연동 전).
+/// 학습 리포트용 — 과목별 가장 취약한 챕터.
 class WeakChapter {
   final String subjectId;
   final String subjectName;
@@ -65,26 +69,22 @@ class WeakChapter {
   });
 }
 
-const List<WeakChapter> weakChapters = [
-  WeakChapter(
-    subjectId: 'economic_law',
-    subjectName: '경제법',
-    chapterName: '공정위 조직·절차',
-    accuracy: 0.48,
-    advice: '과징금·동의의결·분쟁조정 절차에서 자주 틀리고 있어요. 조문 흐름 위주로 다시 정리해보세요.',
-  ),
-  WeakChapter(
-    subjectId: 'civil_law',
-    subjectName: '민법',
-    chapterName: '물권법',
-    accuracy: 0.41,
-    advice: '담보물권 파트의 정답률이 가장 낮아요. 유치권·저당권 판례부터 집중적으로 복습해보세요.',
-  ),
-  WeakChapter(
-    subjectId: 'business_admin',
-    subjectName: '경영학',
-    chapterName: '재무관리',
-    accuracy: 0.33,
-    advice: '계산 문제 정답률이 낮은 편이에요. 공식을 직접 써보며 반복 연습을 추천해요.',
-  ),
-];
+String _adviceFor(double accuracy) {
+  if (accuracy < 0.5) return '정답률이 낮은 편이에요. 관련 개념부터 차근차근 다시 정리해보세요.';
+  if (accuracy < 0.7) return '조금 더 반복하면 확실히 잡을 수 있어요. 틀린 문제 위주로 복습해보세요.';
+  return '거의 다 왔어요! 헷갈렸던 부분만 한 번 더 짚어보세요.';
+}
+
+/// 실제 풀이 기록 기반 취약 챕터 — 시도 횟수가 충분히 쌓인 챕터가 없으면 빈 목록을 반환한다.
+List<WeakChapter> computeWeakChapters({int limit = 3, int minAttempts = 3}) {
+  return UserProgress.instance
+      .weakestCategories(limit: limit, minAttempts: minAttempts)
+      .map((s) => WeakChapter(
+            subjectId: s.subjectId,
+            subjectName: s.subjectName,
+            chapterName: s.category,
+            accuracy: s.accuracy,
+            advice: _adviceFor(s.accuracy),
+          ))
+      .toList();
+}

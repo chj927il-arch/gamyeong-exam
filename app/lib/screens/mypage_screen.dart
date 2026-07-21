@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/study_stats.dart';
+import '../data/user_progress.dart';
 import '../models/exam_subject.dart';
 import '../theme/app_theme.dart';
 import '../theme/subject_style.dart';
@@ -10,68 +11,82 @@ import 'subject_chapters_screen.dart';
 import 'wrong_note_screen.dart';
 
 /// 마이페이지 탭 — 학습리포트 전체 + 오답노트 바로가기.
+/// 학습시간·정답수·취약챕터는 UserProgress(실제 풀이 기록)를 그대로 반영하므로
+/// 문제를 풀 때마다 값이 바뀔 수 있어 ListenableBuilder로 감싼다.
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      children: [
-        const _ProfileHeader(),
-        const SizedBox(height: 16),
-        const _TodayGoalCard(),
-        const SizedBox(height: 20),
-        const Text(
-          '학습 리포트',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
-        ),
-        const SizedBox(height: 14),
-        const _StatsGrid(),
-        const SizedBox(height: 16),
-        const _WeeklyActivityCard(),
-        const SizedBox(height: 16),
-        GlassCard(
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('과목별 취약 챕터', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
-              const SizedBox(height: 4),
-              const Text('정답률이 낮은 챕터부터 먼저 보강해보세요', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: AppColors.textSecondary)),
-              const SizedBox(height: 16),
-              ...List.generate(weakChapters.length, (i) {
-                final isLast = i == weakChapters.length - 1;
-                return Padding(
-                  padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
-                  child: WeakChapterRow(chapter: weakChapters[i]),
-                );
-              }),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          '과목별 학습 현황',
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
-        ),
-        const SizedBox(height: 10),
-        ...examSubjects.map(
-          (subject) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: _SubjectProgressCard(subject: subject),
-          ),
-        ),
-        const SizedBox(height: 24),
-        GlassCard(
-          padding: EdgeInsets.zero,
-          child: _MenuTile(
-            icon: Icons.error_outline_rounded,
-            label: '오답노트',
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const WrongNoteScreen())),
-          ),
-        ),
-      ],
+    return ListenableBuilder(
+      listenable: UserProgress.instance,
+      builder: (context, _) {
+        final weakChapters = computeWeakChapters();
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          children: [
+            const _ProfileHeader(),
+            const SizedBox(height: 16),
+            const _TodayGoalCard(),
+            const SizedBox(height: 20),
+            const Text(
+              '학습 리포트',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 14),
+            const _StatsGrid(),
+            const SizedBox(height: 16),
+            const _WeeklyActivityCard(),
+            const SizedBox(height: 16),
+            GlassCard(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('과목별 취약 챕터', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                  const SizedBox(height: 4),
+                  const Text('정답률이 낮은 챕터부터 먼저 보강해보세요', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: AppColors.textSecondary)),
+                  const SizedBox(height: 16),
+                  if (weakChapters.isEmpty)
+                    const Text(
+                      '아직 데이터가 충분하지 않아요. 문제를 몇 개 더 풀어보면\n취약한 챕터를 분석해서 보여드릴게요.',
+                      style: TextStyle(fontSize: 13.5, color: AppColors.textSecondary, fontWeight: FontWeight.w500, height: 1.5),
+                    )
+                  else
+                    ...List.generate(weakChapters.length, (i) {
+                      final isLast = i == weakChapters.length - 1;
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
+                        child: WeakChapterRow(chapter: weakChapters[i]),
+                      );
+                    }),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              '과목별 학습 현황',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 10),
+            ...examSubjects.map(
+              (subject) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _SubjectProgressCard(subject: subject),
+              ),
+            ),
+            const SizedBox(height: 24),
+            GlassCard(
+              padding: EdgeInsets.zero,
+              child: _MenuTile(
+                icon: Icons.error_outline_rounded,
+                label: '오답노트',
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const WrongNoteScreen())),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -372,11 +387,16 @@ class _MenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.textPrimary),
-      title: Text(label, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 15)),
-      trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
-      onTap: onTap,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      child: ListTile(
+        leading: Icon(icon, color: AppColors.textPrimary),
+        title: Text(label, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 15)),
+        trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+        onTap: onTap,
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../data/sample_questions.dart';
 import '../data/user_progress.dart';
@@ -37,6 +38,12 @@ class _QuizScreenState extends State<QuizScreen> {
   int? _selectedIndex;
   bool _answered = false;
   int _solvedInSession = 0;
+  int _correctInRound = 0;
+  bool _sessionComplete = false;
+
+  final DateTime _startedAt = DateTime.now();
+  int _committedSeconds = 0;
+  Timer? _tickTimer;
 
   @override
   void initState() {
@@ -44,14 +51,52 @@ class _QuizScreenState extends State<QuizScreen> {
     _questions = sampleQuestions
         .where((q) => q.subjectId == widget.subjectId && (widget.category == null || q.category == widget.category))
         .toList();
+    _tickTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _tickTimer?.cancel();
+    _commitElapsedSeconds();
+    super.dispose();
+  }
+
+  Duration get _elapsed => DateTime.now().difference(_startedAt);
+
+  String get _elapsedLabel {
+    final total = _elapsed.inSeconds;
+    final m = (total ~/ 60).toString().padLeft(2, '0');
+    final s = (total % 60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  /// 아직 학습시간에 반영되지 않은 경과 시간만 UserProgress에 누적한다 (끝내기·뒤로가기 양쪽에서 안전하게 호출 가능).
+  void _commitElapsedSeconds() {
+    final elapsedSeconds = _elapsed.inSeconds;
+    final delta = elapsedSeconds - _committedSeconds;
+    if (delta > 0) {
+      UserProgress.instance.addStudySeconds(delta);
+      _committedSeconds = elapsedSeconds;
+    }
   }
 
   void _select(int index) {
     if (_answered) return;
     final question = _questions[_current];
-    if (index != question.correctIndex) {
+    final correct = index == question.correctIndex;
+    if (correct) {
+      _correctInRound++;
+    } else {
       UserProgress.instance.markWrong(question.id);
     }
+    UserProgress.instance.recordAnswer(
+      subjectId: widget.subjectId,
+      subjectName: widget.subjectName,
+      category: question.category,
+      correct: correct,
+    );
     setState(() {
       _selectedIndex = index;
       _answered = true;
@@ -80,11 +125,33 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _next() {
+    if (_current + 1 >= _questions.length) {
+      setState(() => _sessionComplete = true);
+      return;
+    }
     setState(() {
-      _current = (_current + 1) % _questions.length;
+      _current++;
       _selectedIndex = null;
       _answered = false;
     });
+  }
+
+  /// 복습하기 — 문제 순서를 다시 섞어서 처음부터 풀어보게 한다.
+  void _restartShuffled() {
+    setState(() {
+      _questions.shuffle();
+      _current = 0;
+      _selectedIndex = null;
+      _answered = false;
+      _sessionComplete = false;
+      _correctInRound = 0;
+    });
+  }
+
+  /// 끝내기 — 학습시간을 확정 저장하고 "학습하기" 탭의 과목 메뉴로 돌아간다.
+  void _finish() {
+    _commitElapsedSeconds();
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   /// 같은 subTopic(세부 유형) 안에서 현재 문제가 몇 번째인지 — 듀오링고 방식의 묶음 반복 학습 표시용.
@@ -130,10 +197,44 @@ class _QuizScreenState extends State<QuizScreen> {
       appBar: AppBar(
         title: Text(widget.category ?? widget.subjectName),
         centerTitle: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: AppColors.trackBg,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.timer_outlined, size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 4),
+                    Text(
+                      _elapsedLabel,
+                      style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: AppColors.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: AppBackground(
         child: SafeArea(
-          child: Column(
+          child: _sessionComplete
+              ? _CompletionView(
+                  color: style.color,
+                  elapsedLabel: _elapsedLabel,
+                  correct: _correctInRound,
+                  total: _questions.length,
+                  onReview: _restartShuffled,
+                  onFinish: _finish,
+                )
+              : Column(
             children: [
               _ProgressHeader(
                 current: _current,
@@ -195,6 +296,136 @@ class _QuizScreenState extends State<QuizScreen> {
     if (index == correctIndex) return _OptionState.correct;
     if (index == _selectedIndex) return _OptionState.wrong;
     return _OptionState.disabled;
+  }
+}
+
+/// 문제를 다 풀었을 때 보여주는 완료 화면 — 복습하기(순서 섞어서 재도전) / 끝내기(과목 메뉴로 이동).
+class _CompletionView extends StatelessWidget {
+  final Color color;
+  final String elapsedLabel;
+  final int correct;
+  final int total;
+  final VoidCallback onReview;
+  final VoidCallback onFinish;
+
+  const _CompletionView({
+    required this.color,
+    required this.elapsedLabel,
+    required this.correct,
+    required this.total,
+    required this.onReview,
+    required this.onFinish,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accuracyPercent = total == 0 ? 0 : (correct / total * 100).round();
+
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 84,
+              height: 84,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(colors: [color, color.withValues(alpha: 0.7)]),
+              ),
+              child: const Icon(Icons.emoji_events_rounded, color: Colors.white, size: 44),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              '문제를 다 풀었어요!',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: _CompletionStat(icon: Icons.timer_outlined, label: '걸린 시간', value: elapsedLabel, color: color),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _CompletionStat(
+                    icon: Icons.task_alt_rounded,
+                    label: '정답',
+                    value: '$correct / $total ($accuracyPercent%)',
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: color,
+                  side: BorderSide(color: color, width: 1.4),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                onPressed: onReview,
+                icon: const Icon(Icons.replay_rounded),
+                label: const Text('복습하기', style: TextStyle(fontWeight: FontWeight.w800)),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: color,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                onPressed: onFinish,
+                icon: const Icon(Icons.check_rounded),
+                label: const Text('끝내기', style: TextStyle(fontWeight: FontWeight.w800)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CompletionStat extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _CompletionStat({required this.icon, required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.glassBorder),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 14, offset: const Offset(0, 6)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 8),
+          Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: AppColors.textPrimary)),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
   }
 }
 
