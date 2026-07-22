@@ -203,6 +203,7 @@ class _TopNavBar extends StatelessWidget {
 
 /// 상단 타이틀 위에 표시되는 얇은 응원 문구 바 — 증권 시세바처럼 계속 흘러간다.
 /// 브랜드 네이비 배경 + 흰색 텍스트로, 앱 전체 색상 톤과 어울리도록 구성.
+/// 화면 끝까지 닿지 않도록 좌우로 살짝 여백을 줘서 폭을 줄였다.
 class _EncourageBar extends StatelessWidget {
   const _EncourageBar();
 
@@ -211,19 +212,27 @@ class _EncourageBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: _kEncourageBarHeight,
-      color: AppColors.primary,
-      child: MarqueeText(
-        text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
-        style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 13.5, letterSpacing: -0.1),
-        height: _kEncourageBarHeight,
-        gap: 24,
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      color: AppColors.bgBase,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          color: AppColors.primary,
+          child: MarqueeText(
+            text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
+            style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 13.5, letterSpacing: -0.1),
+            height: _kEncourageBarHeight,
+            gap: 24,
+          ),
+        ),
       ),
     );
   }
 }
 
 /// 하단 바 — 가운데에 "학습하기" 알약(pill)형 버튼이 살짝 떠 있는 형태.
-/// 앱 전체가 둥근 사각형(카드·버튼) 언어를 쓰는데 원형만 튀어서, 같은 라운드 사각형 톤으로 맞췄다.
+/// 두꺼운 흰 테두리 없이, 은은한 세로 그라데이션 + 버튼 색과 같은 톤의 부드러운 그림자로
+/// 입체감을 주는 좀 더 차분하고 세련된 스타일.
 class _BottomStudyBar extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
@@ -231,6 +240,9 @@ class _BottomStudyBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final base = selected ? AppColors.accentGold : AppColors.primary;
+    final top = Color.lerp(base, Colors.white, 0.16)!;
+
     return SizedBox(
       height: _kBottomBarHeight + _kStudyButtonHeight / 2,
       child: Stack(
@@ -248,36 +260,33 @@ class _BottomStudyBar extends StatelessWidget {
             bottom: 0,
             child: Material(
               color: Colors.transparent,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               child: InkWell(
                 onTap: onTap,
-                borderRadius: BorderRadius.circular(18),
-                child: Container(
+                borderRadius: BorderRadius.circular(16),
+                child: Ink(
                   width: _kStudyButtonWidth,
                   height: _kStudyButtonHeight,
-                  alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(16),
                     gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: selected
-                          ? [AppColors.accentGold, const Color(0xFFDBA53F)]
-                          : [AppColors.primary, const Color(0xFF3E6FB0)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [top, base],
                     ),
-                    border: Border.all(color: AppColors.bgBase, width: 3),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.20), blurRadius: 14, offset: const Offset(0, 6)),
+                      BoxShadow(color: base.withValues(alpha: 0.38), blurRadius: 18, offset: const Offset(0, 8)),
                     ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.edit_note_rounded, color: Colors.white, size: 22),
-                      SizedBox(width: 6),
+                      Icon(Icons.auto_stories_rounded, color: Colors.white, size: 21),
+                      SizedBox(width: 7),
                       Text(
                         '학습하기',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
+                        style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: Colors.white, letterSpacing: -0.2),
                       ),
                     ],
                   ),
