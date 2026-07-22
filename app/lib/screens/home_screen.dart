@@ -188,6 +188,16 @@ class _SubjectGuideCarousel extends StatelessWidget {
   }
 }
 
+/// 과목별 표지 이미지 — 아직 없는 과목은 null(기존 색상 그라데이션으로 대체).
+String? _subjectCoverImage(String subjectId) {
+  switch (subjectId) {
+    case 'economic_law':
+      return 'assets/images/subject_cover_economic_law.png';
+    default:
+      return null;
+  }
+}
+
 class _SubjectCoverCard extends StatelessWidget {
   final ExamSubject subject;
   const _SubjectCoverCard({required this.subject});
@@ -216,27 +226,36 @@ class _SubjectCoverCard extends StatelessWidget {
           children: [
             Expanded(
               flex: 3,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [style.color, style.color.withValues(alpha: 0.78)],
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(style.icon, color: Colors.white, size: 30),
-                    Text(
-                      subject.name,
-                      style: const TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w900),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (_subjectCoverImage(subject.id) != null)
+                    Image.asset(_subjectCoverImage(subject.id)!, fit: BoxFit.cover)
+                  else
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [style.color, style.color.withValues(alpha: 0.78)],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(style.icon, color: Colors.white, size: 30),
+                        Text(
+                          subject.name,
+                          style: const TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w900),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
