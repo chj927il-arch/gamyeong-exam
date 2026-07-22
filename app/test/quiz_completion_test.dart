@@ -86,8 +86,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1100));
     await tester.pump(const Duration(milliseconds: 500));
 
-    // 하단 "학습하기" 버튼 → 과목 메뉴(StudyScreen)
-    await tester.tap(find.text('학습하기'));
+    // 하단 "지금 학습하러가기" 바 → 과목 메뉴(StudyScreen)
+    await tester.tap(find.text('지금 학습하러가기'));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(StudyScreen), findsOneWidget);
 
