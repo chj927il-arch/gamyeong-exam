@@ -9,12 +9,13 @@ import 'home_screen.dart';
 import 'mypage_screen.dart';
 import 'study_screen.dart';
 
-const double _kEncourageBarHeight = 30;
+const double _kEncourageBarHeight = 20;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
-const double _kStudyButtonWidth = 128;
-const double _kStudyButtonHeight = 54;
+const double _kStudyButtonWidth = 132;
+const double _kStudyButtonHeight = 52;
+const double _kStudyButtonShadowOffset = 5;
 const double _kBottomBarHeight = 50;
 const int _kStudyTabIndex = 3;
 
@@ -202,8 +203,7 @@ class _TopNavBar extends StatelessWidget {
 }
 
 /// 상단 타이틀 위에 표시되는 얇은 응원 문구 바 — 증권 시세바처럼 계속 흘러간다.
-/// 브랜드 네이비 배경 + 흰색 텍스트로, 앱 전체 색상 톤과 어울리도록 구성.
-/// 화면 끝까지 닿지 않도록 좌우로 살짝 여백을 줘서 폭을 줄였다.
+/// 브랜드 네이비 배경 + 흰색 텍스트. 화면 폭 끝까지 채우되, 높이는 얇게 줄였다.
 class _EncourageBar extends StatelessWidget {
   const _EncourageBar();
 
@@ -212,27 +212,20 @@ class _EncourageBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: _kEncourageBarHeight,
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      color: AppColors.bgBase,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: Container(
-          color: AppColors.primary,
-          child: MarqueeText(
-            text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
-            style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 13.5, letterSpacing: -0.1),
-            height: _kEncourageBarHeight,
-            gap: 24,
-          ),
-        ),
+      color: AppColors.primary,
+      child: MarqueeText(
+        text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
+        style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 12, letterSpacing: -0.1),
+        height: _kEncourageBarHeight,
+        gap: 24,
       ),
     );
   }
 }
 
-/// 하단 바 — 가운데에 "학습하기" 알약(pill)형 버튼이 살짝 떠 있는 형태.
-/// 두꺼운 흰 테두리 없이, 은은한 세로 그라데이션 + 버튼 색과 같은 톤의 부드러운 그림자로
-/// 입체감을 주는 좀 더 차분하고 세련된 스타일.
+/// 하단 바 — 가운데에 "학습하기" 오락기 버튼 스타일의 굵은 타이포그래피 버튼.
+/// 블러 없는 딱딱한 오프셋 그림자(하드 섀도)로 눌리는 버튼 같은 입체감을 주고,
+/// 로고에 쓴 것과 같은 굵은 디스플레이 폰트(Black Han Sans)로 글자 자체를 크고 눈에 띄게 키웠다.
 class _BottomStudyBar extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
@@ -241,10 +234,9 @@ class _BottomStudyBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final base = selected ? AppColors.accentGold : AppColors.primary;
-    final top = Color.lerp(base, Colors.white, 0.16)!;
 
     return SizedBox(
-      height: _kBottomBarHeight + _kStudyButtonHeight / 2,
+      height: _kBottomBarHeight + _kStudyButtonHeight / 2 + _kStudyButtonShadowOffset,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.bottomCenter,
@@ -258,39 +250,58 @@ class _BottomStudyBar extends StatelessWidget {
           ),
           Positioned(
             bottom: 0,
-            child: Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(16),
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(16),
-                child: Ink(
-                  width: _kStudyButtonWidth,
-                  height: _kStudyButtonHeight,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [top, base],
-                    ),
-                    boxShadow: [
-                      BoxShadow(color: base.withValues(alpha: 0.38), blurRadius: 18, offset: const Offset(0, 8)),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.auto_stories_rounded, color: Colors.white, size: 21),
-                      SizedBox(width: 7),
-                      Text(
-                        '학습하기',
-                        style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: Colors.white, letterSpacing: -0.2),
+            child: SizedBox(
+              width: _kStudyButtonWidth + _kStudyButtonShadowOffset,
+              height: _kStudyButtonHeight + _kStudyButtonShadowOffset,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // 하드 섀도 — 블러 없이 색만 진한 사각형을 살짝 오른쪽 아래로 오프셋해서
+                  // "버튼이 판 위에 얹혀있는" 듯한 아케이드 버튼 느낌을 낸다.
+                  Positioned(
+                    left: _kStudyButtonShadowOffset,
+                    top: _kStudyButtonShadowOffset,
+                    child: Container(
+                      width: _kStudyButtonWidth,
+                      height: _kStudyButtonHeight,
+                      decoration: BoxDecoration(
+                        color: AppColors.ink,
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(14),
+                      child: InkWell(
+                        onTap: onTap,
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          width: _kStudyButtonWidth,
+                          height: _kStudyButtonHeight,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: base,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: AppColors.ink, width: 2.2),
+                          ),
+                          child: Text(
+                            '학습하기',
+                            style: GoogleFonts.blackHanSans(
+                              fontSize: 19,
+                              color: Colors.white,
+                              letterSpacing: -0.3,
+                              height: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
