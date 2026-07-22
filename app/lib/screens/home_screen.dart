@@ -167,26 +167,23 @@ class _DailyOxBanner extends StatelessWidget {
   }
 }
 
-/// 과목 안내 — 경제법·민법·경영학 3개 과목을 표지(교재 커버) 느낌으로 옆으로 흘려보낸다.
+/// 과목 안내 — 경제법·민법·경영학 3개 과목을 표지(교재 커버) 느낌으로 보여준다.
 /// 수강후기 카드보다 훨씬 큰, A4 비율(210:297)을 모바일에 맞게 줄인 세로형 카드.
+/// 자동으로 흘러가지 않고, 손가락으로 옆으로 넘겨서 보는 정지형 스크롤.
 class _SubjectGuideCarousel extends StatelessWidget {
   const _SubjectGuideCarousel();
 
   @override
   Widget build(BuildContext context) {
-    return MarqueeRow(
+    return SizedBox(
       height: 268,
-      pixelsPerSecond: 26,
-      itemBuilder: (context) {
-        return Row(
-          children: [
-            for (final subject in examSubjects) ...[
-              _SubjectCoverCard(subject: subject),
-              const SizedBox(width: 14),
-            ],
-          ],
-        );
-      },
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: examSubjects.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 14),
+        itemBuilder: (context, index) => _SubjectCoverCard(subject: examSubjects[index]),
+      ),
     );
   }
 }
