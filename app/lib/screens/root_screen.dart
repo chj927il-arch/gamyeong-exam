@@ -13,8 +13,8 @@ const double _kEncourageBarHeight = 20;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
-const double _kStudyButtonWidth = 132;
-const double _kStudyButtonHeight = 52;
+const double _kStudyButtonWidth = 150;
+const double _kStudyButtonHeight = 54;
 const double _kStudyButtonShadowOffset = 5;
 const double _kBottomBarHeight = 50;
 const int _kStudyTabIndex = 3;
@@ -291,7 +291,7 @@ class _BottomStudyBar extends StatelessWidget {
                           child: Text(
                             '학습하기',
                             style: GoogleFonts.blackHanSans(
-                              fontSize: 19,
+                              fontSize: 24,
                               color: Colors.white,
                               letterSpacing: -0.3,
                               height: 1,
