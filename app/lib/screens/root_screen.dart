@@ -16,7 +16,7 @@ const int _kTabCount = 5;
 const double _kStudyButtonWidth = 150;
 const double _kStudyButtonHeight = 54;
 const double _kStudyButtonShadowOffset = 5;
-const double _kBottomBarHeight = 66;
+const double _kBottomBarHeight = _kStudyButtonHeight / 2;
 const int _kStudyTabIndex = 3;
 
 class _NavItem {
@@ -235,25 +235,26 @@ class _BottomStudyBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final base = selected ? AppColors.accentGold : AppColors.primary;
 
-    // 뜨는 효과(포크업) 없이, 슬림한 바 안에 버튼을 딱 맞게 중앙 배치 —
-    // 버튼 위아래로 남는 여백을 최소화한다.
-    return Container(
-      height: _kBottomBarHeight,
-      color: AppColors.surfaceRaised,
+    // 회색 바는 버튼의 딱 절반 높이까지만 오고, 버튼 위쪽 절반은 배경 없이
+    // 몸통의 흰 배경 위에 그대로 떠 있는 형태.
+    return SizedBox(
+      height: _kBottomBarHeight + _kStudyButtonHeight / 2 + _kStudyButtonShadowOffset,
       child: Stack(
         clipBehavior: Clip.none,
+        alignment: Alignment.bottomCenter,
         children: [
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.glassBorder, width: 1.2)),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, -3)),
-                ],
-              ),
+          Container(
+            height: _kBottomBarHeight,
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              border: Border(top: BorderSide(color: AppColors.glassBorder, width: 1.2)),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, -3)),
+              ],
             ),
           ),
-          Center(
+          Positioned(
+            bottom: 0,
             child: SizedBox(
               width: _kStudyButtonWidth + _kStudyButtonShadowOffset,
               height: _kStudyButtonHeight + _kStudyButtonShadowOffset,
