@@ -13,7 +13,7 @@ const double _kEncourageBarHeight = 20;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
-const double _kBottomBarHeight = 34;
+const double _kBottomBarHeight = 38;
 const int _kStudyTabIndex = 3;
 
 class _NavItem {
@@ -221,36 +221,81 @@ class _EncourageBar extends StatelessWidget {
 }
 
 /// 하단 바 — 버튼 없이, 바 전체가 "지금 학습하러가기" 한 줄짜리 탭 영역.
-class _BottomStudyBar extends StatelessWidget {
+/// 파랑·보라 그라데이션 배경 위에 은은하게 깜빡이는(pulse) 효과를 줘서 눈에 띄게 한다.
+class _BottomStudyBar extends StatefulWidget {
   final bool selected;
   final VoidCallback onTap;
   const _BottomStudyBar({required this.selected, required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
-    final base = selected ? AppColors.accentGold : AppColors.primary;
+  State<_BottomStudyBar> createState() => _BottomStudyBarState();
+}
 
-    return Material(
-      color: base,
-      child: InkWell(
-        onTap: onTap,
-        child: SizedBox(
-          height: _kBottomBarHeight,
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 18),
-              const SizedBox(width: 6),
-              Text(
-                '지금 학습하러가기',
-                style: GoogleFonts.blackHanSans(
-                  fontSize: 18,
-                  color: Colors.white,
-                  letterSpacing: -0.2,
-                ),
+class _BottomStudyBarState extends State<_BottomStudyBar> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1100))
+      ..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final t = _controller.value;
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Color.lerp(const Color(0xFF3B5BFF), const Color(0xFF7B3FF2), t)!,
+                Color.lerp(const Color(0xFF7B3FF2), const Color(0xFF3B5BFF), t)!,
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF7B3FF2).withValues(alpha: 0.35 + 0.35 * t),
+                blurRadius: 10 + 6 * t,
+                spreadRadius: 1,
               ),
             ],
+          ),
+          child: child,
+        );
+      },
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: widget.onTap,
+          child: SizedBox(
+            height: _kBottomBarHeight,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 18),
+                const SizedBox(width: 6),
+                Text(
+                  '지금 학습하러가기',
+                  style: GoogleFonts.blackHanSans(
+                    fontSize: 18,
+                    color: Colors.white,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
