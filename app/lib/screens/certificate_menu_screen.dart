@@ -4,13 +4,25 @@ import 'exam_intro_screen.dart';
 import 'exam_subjects_screen.dart';
 import 'study_screen.dart';
 
+/// 학습하기 화면의 라우트 이름 — 퀴즈 완료 후 "끝내기"를 눌렀을 때 이 화면까지만
+/// 되돌아가기 위해 사용한다(popUntil(isFirst)는 자격증 탭 목록까지 돌아가버리므로 부적절).
+const studyScreenRouteName = '/study';
+
 class _MenuEntry {
   final String label;
   final String subtitle;
   final IconData icon;
   final Color color;
   final WidgetBuilder builder;
-  const _MenuEntry({required this.label, required this.subtitle, required this.icon, required this.color, required this.builder});
+  final String? routeName;
+  const _MenuEntry({
+    required this.label,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.builder,
+    this.routeName,
+  });
 }
 
 /// 자격증(예: 가맹거래사) 선택 시 보여주는 하위 메뉴 — 시험소개 · 시험과목 · 학습하기.
@@ -41,6 +53,7 @@ class CertificateMenuScreen extends StatelessWidget {
         icon: Icons.edit_note_outlined,
         color: AppColors.correct,
         builder: (_) => const StudyScreen(),
+        routeName: studyScreenRouteName,
       ),
     ];
 
@@ -91,7 +104,10 @@ class _MenuCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: entry.builder)),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            settings: entry.routeName != null ? RouteSettings(name: entry.routeName) : null,
+            builder: entry.builder,
+          )),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(

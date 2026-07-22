@@ -12,26 +12,29 @@ class StudyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      children: [
-        const Text(
-          '무엇을 학습할까요?',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
-        ),
-        const SizedBox(height: 4),
-        const Text(
-          '과목을 선택하면 출제비중이 높은 챕터부터 유사문제를 풀 수 있어요',
-          style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary, height: 1.4),
-        ),
-        const SizedBox(height: 16),
-        ...examSubjects.map(
-          (subject) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SubjectCard(subject: subject),
+    return Scaffold(
+      appBar: AppBar(title: const Text('학습하기'), centerTitle: false),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        children: [
+          const Text(
+            '무엇을 학습할까요?',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          const Text(
+            '과목을 선택하면 출제비중이 높은 챕터부터 유사문제를 풀 수 있어요',
+            style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary, height: 1.4),
+          ),
+          const SizedBox(height: 16),
+          ...examSubjects.map(
+            (subject) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _SubjectCard(subject: subject),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

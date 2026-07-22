@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gamyeong_exam/data/sample_questions.dart';
 import 'package:gamyeong_exam/data/user_progress.dart';
 import 'package:gamyeong_exam/main.dart';
+import 'package:gamyeong_exam/screens/certificate_menu_screen.dart';
+import 'package:gamyeong_exam/screens/license_screen.dart';
 import 'package:gamyeong_exam/screens/quiz_screen.dart';
 import 'package:gamyeong_exam/screens/study_screen.dart';
 import 'package:gamyeong_exam/screens/subject_chapters_screen.dart';
@@ -86,10 +88,17 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1100));
     await tester.pump(const Duration(milliseconds: 500));
 
-    // 하단 "지금 학습하러가기" 바 → 자격증 탭으로 전환 후 과목 메뉴(StudyScreen)를 push한다.
-    // 탭 전환(postFrameCallback)과 push 두 단계를 거치므로 프레임을 한 번 더 pump해준다.
+    // 하단 "지금 학습하러가기" 바 → 자격증 탭(LicenseScreen)으로 전환된다.
     await tester.tap(find.text('지금 학습하러가기'));
     await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(LicenseScreen), findsOneWidget);
+
+    // 가맹거래사 → 하위 메뉴(CertificateMenuScreen) → 학습하기 → StudyScreen
+    await tester.tap(find.text('가맹거래사'));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(CertificateMenuScreen), findsOneWidget);
+
+    await tester.tap(find.descendant(of: find.byType(CertificateMenuScreen), matching: find.text('학습하기')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(StudyScreen), findsOneWidget);
 

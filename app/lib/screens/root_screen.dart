@@ -6,13 +6,12 @@ import '../widgets/marquee_text.dart';
 import 'home_screen.dart';
 import 'license_screen.dart';
 import 'mypage_screen.dart';
-import 'study_screen.dart';
 
 const double _kEncourageBarHeight = 25;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 3;
 
-const double _kBottomBarHeight = 44;
+const double _kBottomBarHeight = 52;
 
 class _NavItem {
   final IconData icon;
@@ -64,15 +63,9 @@ class _RootScreenState extends State<RootScreen> {
     }
   }
 
-  /// 하단 "지금 학습하러가기" 바 — 자격증 탭으로 전환한 뒤 바로 학습하기(과목 선택) 화면으로 이동한다.
-  void _goToStudy() {
-    setState(() => _tabIndex = 1);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final nav = _navKeys[1].currentState;
-      nav?.popUntil((route) => route.isFirst);
-      nav?.push(MaterialPageRoute(builder: (_) => const StudyScreen()));
-    });
-  }
+  /// 하단 "지금 학습하러가기" 바 — 자격증 탭(가맹거래사 등 자격증 목록)으로 이동시킨다.
+  /// 학습하기는 자격증을 먼저 선택해야 들어갈 수 있으므로, 학습화면으로 바로 건너뛰지 않는다.
+  void _goToLicenseTab() => _onDestinationSelected(1);
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +133,7 @@ class _RootScreenState extends State<RootScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _BottomStudyBar(onTap: _goToStudy),
+      bottomNavigationBar: _BottomStudyBar(onTap: _goToLicenseTab),
     );
   }
 }
@@ -286,12 +279,12 @@ class _BottomStudyBarState extends State<_BottomStudyBar> with SingleTickerProvi
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 20),
-                const SizedBox(width: 7),
+                const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 23),
+                const SizedBox(width: 8),
                 Text(
                   '지금 학습하러가기',
                   style: GoogleFonts.blackHanSans(
-                    fontSize: 21,
+                    fontSize: 24,
                     color: Colors.white,
                     letterSpacing: -0.2,
                   ),

@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import '../theme/subject_style.dart';
 import '../widgets/app_background.dart';
 import '../widgets/highlighted_text.dart';
+import 'certificate_menu_screen.dart' show studyScreenRouteName;
 
 const _optionLabels = ['A', 'B', 'C', 'D', 'E'];
 
@@ -151,7 +152,12 @@ class _QuizScreenState extends State<QuizScreen> {
   /// 끝내기 — 학습시간을 확정 저장하고 "학습하기" 탭의 과목 메뉴로 돌아간다.
   void _finish() {
     _commitElapsedSeconds();
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    final navigator = Navigator.of(context);
+    // "학습하기" 화면(StudyScreen)까지만 되돌아간다. 해당 라우트가 없는 경우
+    // (예: 테스트에서 QuizScreen을 단독 루트로 띄운 경우)에는 첫 화면까지 돌아간다.
+    if (navigator.canPop()) {
+      navigator.popUntil(ModalRoute.withName(studyScreenRouteName));
+    }
   }
 
   /// 같은 subTopic(세부 유형) 안에서 현재 문제가 몇 번째인지 — 듀오링고 방식의 묶음 반복 학습 표시용.

@@ -23,13 +23,16 @@ class GamyeongExamApp extends StatelessWidget {
       title: '스터디박스',
       theme: AppTheme.light(),
       home: const SplashScreen(),
-      // 웹/데스크톱 브라우저처럼 화면이 넓을 때도 폰 앱처럼 보이도록 폭 제한
+      // 웹/데스크톱 브라우저처럼 화면이 넓을 때도 폰 앱처럼 보이도록 폭을 제한하되,
+      // 태블릿 정도의 넓은 화면에서는 최대폭을 넓혀 콘텐츠가 지나치게 좁게 보이지 않도록 한다.
       builder: (context, child) {
+        final screenWidth = MediaQuery.sizeOf(context).width;
+        final maxWidth = screenWidth >= 700 ? 640.0 : 430.0;
         return ColoredBox(
           color: AppColors.trackBg,
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 430),
+              constraints: BoxConstraints(maxWidth: maxWidth),
               child: child,
             ),
           ),

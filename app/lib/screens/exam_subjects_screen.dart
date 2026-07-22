@@ -11,26 +11,29 @@ class ExamSubjectsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      children: [
-        const Text(
-          '1차 시험 과목',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
-        ),
-        const SizedBox(height: 4),
-        const Text(
-          '과목을 눌러 출제경향과 학습방법을 확인해보세요',
-          style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 16),
-        ...examSubjects.map(
-          (subject) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SubjectListCard(subject: subject),
+    return Scaffold(
+      appBar: AppBar(title: const Text('시험과목'), centerTitle: false),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        children: [
+          const Text(
+            '1차 시험 과목',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          const Text(
+            '과목을 눌러 출제경향과 학습방법을 확인해보세요',
+            style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: 16),
+          ...examSubjects.map(
+            (subject) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _SubjectListCard(subject: subject),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

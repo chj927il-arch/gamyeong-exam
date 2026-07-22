@@ -8,7 +8,9 @@ class ExamIntroScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Scaffold(
+      appBar: AppBar(title: const Text('시험소개'), centerTitle: false),
+      body: ListView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
         Container(
@@ -107,6 +109,7 @@ class ExamIntroScreen extends StatelessWidget {
           ),
         ),
       ],
+      ),
     );
   }
 }
