@@ -84,6 +84,20 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: _BoardSection(
+            title: '자주 묻는 질문',
+            icon: Icons.help_outline_rounded,
+            headerColor: AppColors.accentGold,
+            onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FaqScreen())),
+            rows: faqs
+                .take(3)
+                .map((f) => _BoardRow(leading: 'Q. ', title: f.question))
+                .toList(),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: _BoardSection(
             title: '공지사항',
             icon: Icons.campaign_outlined,
             headerColor: AppColors.primary,
@@ -95,20 +109,6 @@ class HomeScreen extends StatelessWidget {
                       title: n.title,
                       trailing: n.date,
                     ))
-                .toList(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: _BoardSection(
-            title: '자주 묻는 질문',
-            icon: Icons.help_outline_rounded,
-            headerColor: AppColors.accentGold,
-            onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FaqScreen())),
-            rows: faqs
-                .take(3)
-                .map((f) => _BoardRow(leading: 'Q. ', title: f.question))
                 .toList(),
           ),
         ),
