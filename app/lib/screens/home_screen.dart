@@ -79,6 +79,8 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 8),
         const _ReviewCarousel(),
         const SizedBox(height: 24),
+        const _MotivationStrip(),
+        const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: _BoardSection(
@@ -93,8 +95,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const _MotivationStrip(),
-        const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: _NoticeBar(
@@ -107,7 +107,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// 자주 묻는 질문 아래 짧은 동기부여 띠배너 — 첨부 이미지(1536x197 비율) 그대로 표시.
+/// 자주 묻는 질문 위 짧은 동기부여 띠배너 — 첨부 이미지(1536x197 비율) 그대로 표시.
 class _MotivationStrip extends StatelessWidget {
   const _MotivationStrip();
 
