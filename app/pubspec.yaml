@@ -66,6 +66,7 @@ flutter:
     - assets/images/rolling_banner_update.png
     - assets/images/rolling_banner_premium.png
     - assets/images/daily_ox_banner.png
+    - assets/images/motivation_strip.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

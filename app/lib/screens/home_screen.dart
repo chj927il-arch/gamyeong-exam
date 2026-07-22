@@ -91,46 +91,19 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// 자주 묻는 질문 아래 짧은 동기부여 띠배너 — 1280x200 비율, 투컬러 강조.
+/// 자주 묻는 질문 아래 짧은 동기부여 띠배너 — 첨부 이미지(1536x197 비율) 그대로 표시.
 class _MotivationStrip extends StatelessWidget {
   const _MotivationStrip();
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1280 / 200,
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [AppColors.primary, Color(0xFF7B3FE4)],
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: '하루에 '),
-                  TextSpan(text: '10분', style: TextStyle(color: AppColors.accentGold.withValues(alpha: 0.98))),
-                  const TextSpan(text: '만 투자하면\n'),
-                  const TextSpan(text: '합격', style: TextStyle(color: Color(0xFF7CF2C6))),
-                  const TextSpan(text: '이 가까워집니다'),
-                ],
-              ),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 21,
-                fontWeight: FontWeight.w900,
-                height: 1.35,
-                letterSpacing: -0.2,
-              ),
-            ),
-          ),
-        ),
+      aspectRatio: 1536 / 197,
+      child: const Image(
+        image: AssetImage('assets/images/motivation_strip.png'),
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
       ),
     );
   }
