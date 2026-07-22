@@ -9,10 +9,10 @@ import 'package:gamyeong_exam/screens/subject_chapters_screen.dart';
 import 'package:gamyeong_exam/theme/app_theme.dart';
 
 void main() {
-  // 챕터('목적·총칙')는 샘플 문제가 1개뿐이라, 한 문제만 풀어도 바로 회차가 끝나
+  // 챕터('구속조건부거래')는 샘플 문제가 1개뿐이라, 한 문제만 풀어도 바로 회차가 끝나
   // 완료 화면(복습하기/끝내기) 로직을 빠르게 검증할 수 있다.
   const subjectId = 'economic_law';
-  const category = '목적·총칙';
+  const category = '구속조건부거래';
 
   Widget buildApp() {
     return MaterialApp(
@@ -96,8 +96,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(SubjectChaptersScreen), findsOneWidget);
 
-    // 문제가 1개뿐인 챕터로 진입 → QuizScreen
-    await tester.tap(find.descendant(of: find.byType(SubjectChaptersScreen), matching: find.text(category)));
+    // 문제가 1개뿐인 챕터로 진입 → QuizScreen. 챕터 목록이 길어 지연 렌더링되므로
+    // (뷰포트+캐시 범위 밖 항목은 아직 빌드되지 않음) scrollUntilVisible로 실제 스크롤하며 찾는다.
+    final chapterFinder = find.descendant(of: find.byType(SubjectChaptersScreen), matching: find.text(category));
+    final scrollableFinder = find.descendant(of: find.byType(SubjectChaptersScreen), matching: find.byType(Scrollable)).first;
+    await tester.scrollUntilVisible(chapterFinder, 300, scrollable: scrollableFinder);
+    await tester.pump();
+    await tester.tap(chapterFinder);
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(QuizScreen), findsOneWidget);
 
