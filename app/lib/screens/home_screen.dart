@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../data/board_data.dart';
-import '../data/exam_schedule.dart';
 import '../data/topic_stats.dart';
 import '../models/exam_subject.dart';
 import '../theme/app_theme.dart';
@@ -20,13 +19,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.only(top: 16, bottom: 24),
+      padding: const EdgeInsets.only(top: 26, bottom: 24),
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: const _DdayBar(),
-        ),
-        const SizedBox(height: 14),
         // 배너는 좌우 여백 없이 화면 폭 전체를 채운다.
         const LaunchBanner(),
         const SizedBox(height: 20),
@@ -126,44 +120,6 @@ class _MotivationStrip extends StatelessWidget {
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
-      ),
-    );
-  }
-}
-
-/// 시험일까지 남은 일수를 보여주는 얇은 D-day 바 — 홈 화면 맨 위에서 가장 먼저 보이도록 배치.
-class _DdayBar extends StatelessWidget {
-  const _DdayBar();
-
-  @override
-  Widget build(BuildContext context) {
-    final d = ExamSchedule.daysRemaining;
-    final label = d >= 0 ? 'D-$d' : 'D+${-d}';
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(color: AppColors.accentGold, borderRadius: BorderRadius.circular(999)),
-            child: Text(
-              label,
-              style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900, fontSize: 14),
-            ),
-          ),
-          const SizedBox(width: 10),
-          const Expanded(
-            child: Text(
-              '가맹거래사 1차 시험일까지',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13.5),
-            ),
-          ),
-        ],
       ),
     );
   }
