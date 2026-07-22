@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../data/board_data.dart';
+import '../models/exam_subject.dart';
 import '../theme/app_theme.dart';
+import '../theme/subject_style.dart';
 import '../widgets/launch_banner.dart';
 import '../widgets/marquee_row.dart';
 import '../widgets/rolling_banner.dart';
@@ -8,6 +10,7 @@ import 'daily_ox_list_screen.dart';
 import 'faq_screen.dart';
 import 'notice_screen.dart';
 import 'review_screen.dart';
+import 'subject_info_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -36,6 +39,13 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         const _DailyOxBanner(),
+        const SizedBox(height: 24),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: _SectionTitle(prefix: '과목 ', highlight: '안내', color: AppColors.primary),
+        ),
+        const SizedBox(height: 10),
+        const _SubjectGuideCarousel(),
         const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -151,6 +161,127 @@ class _DailyOxBanner extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 과목 안내 — 경제법·민법·경영학 3개 과목을 표지(교재 커버) 느낌으로 옆으로 흘려보낸다.
+/// 수강후기 카드보다 훨씬 큰, A4 비율(210:297)을 모바일에 맞게 줄인 세로형 카드.
+class _SubjectGuideCarousel extends StatelessWidget {
+  const _SubjectGuideCarousel();
+
+  @override
+  Widget build(BuildContext context) {
+    return MarqueeRow(
+      height: 268,
+      pixelsPerSecond: 26,
+      itemBuilder: (context) {
+        return Row(
+          children: [
+            for (final subject in examSubjects) ...[
+              _SubjectCoverCard(subject: subject),
+              const SizedBox(width: 14),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SubjectCoverCard extends StatelessWidget {
+  final ExamSubject subject;
+  const _SubjectCoverCard({required this.subject});
+
+  @override
+  Widget build(BuildContext context) {
+    final style = subjectStyleOf(subject.id);
+
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => SubjectInfoScreen(subjectId: subject.id, subjectName: subject.name)),
+      ),
+      child: Container(
+        width: 190,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.glassBorder),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 16, offset: const Offset(0, 8)),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [style.color, style.color.withValues(alpha: 0.78)],
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(style.icon, color: Colors.white, size: 30),
+                    Text(
+                      subject.name,
+                      style: const TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w900),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (subject.categories.isNotEmpty)
+                      Wrap(
+                        spacing: 5,
+                        runSpacing: 5,
+                        children: subject.categories
+                            .map((c) => Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: style.color.withValues(alpha: 0.10),
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: Text(
+                                    c,
+                                    style: TextStyle(color: style.color, fontSize: 10.5, fontWeight: FontWeight.w700),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    Row(
+                      children: [
+                        Text(
+                          '과목 안내 보기',
+                          style: TextStyle(color: style.color, fontSize: 12.5, fontWeight: FontWeight.w700),
+                        ),
+                        Icon(Icons.chevron_right_rounded, size: 16, color: style.color),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
