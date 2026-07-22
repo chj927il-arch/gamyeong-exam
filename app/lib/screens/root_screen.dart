@@ -13,7 +13,7 @@ const double _kEncourageBarHeight = 20;
 const double _kTopNavHeight = 46;
 const int _kTabCount = 5;
 
-const double _kBottomBarHeight = 56;
+const double _kBottomBarHeight = 44;
 const int _kStudyTabIndex = 3;
 
 class _NavItem {
@@ -240,12 +240,12 @@ class _BottomStudyBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 20),
+              const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 22),
               const SizedBox(width: 8),
               Text(
                 '지금 학습하러가기',
                 style: GoogleFonts.blackHanSans(
-                  fontSize: 18,
+                  fontSize: 23,
                   color: Colors.white,
                   letterSpacing: -0.2,
                 ),
