@@ -3,18 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_background.dart';
 import '../widgets/marquee_text.dart';
-import 'exam_intro_screen.dart';
-import 'exam_subjects_screen.dart';
 import 'home_screen.dart';
+import 'license_screen.dart';
 import 'mypage_screen.dart';
 import 'study_screen.dart';
 
-const double _kEncourageBarHeight = 20;
+const double _kEncourageBarHeight = 25;
 const double _kTopNavHeight = 46;
-const int _kTabCount = 5;
+const int _kTabCount = 3;
 
-const double _kBottomBarHeight = 38;
-const int _kStudyTabIndex = 3;
+const double _kBottomBarHeight = 44;
 
 class _NavItem {
   final IconData icon;
@@ -24,12 +22,12 @@ class _NavItem {
   const _NavItem(this.icon, this.selectedIcon, this.label, this.tabIndex);
 }
 
-/// 상단 메뉴 — 학습하기는 하단 중앙의 볼록 버튼으로 뺐으므로 나머지 4개만 노출한다.
+/// 상단 메뉴 — 홈 / 자격증 / 마이페이지 3개. "자격증" 안에서 전문자격사·IT·취업 등으로 분류하고,
+/// 각 자격증(예: 가맹거래사) 하위에 시험소개·시험과목·학습하기가 배치된다.
 const _navItems = [
   _NavItem(Icons.home_outlined, Icons.home, '홈', 0),
-  _NavItem(Icons.info_outline_rounded, Icons.info_rounded, '시험소개', 1),
-  _NavItem(Icons.menu_book_outlined, Icons.menu_book_rounded, '시험과목', 2),
-  _NavItem(Icons.person_outline_rounded, Icons.person_rounded, '마이페이지', 4),
+  _NavItem(Icons.school_outlined, Icons.school, '자격증', 1),
+  _NavItem(Icons.person_outline_rounded, Icons.person_rounded, '마이페이지', 2),
 ];
 
 class RootScreen extends StatefulWidget {
@@ -47,9 +45,7 @@ class _RootScreenState extends State<RootScreen> {
 
   static const _tabScreens = [
     HomeScreen(),
-    ExamIntroScreen(),
-    ExamSubjectsScreen(),
-    StudyScreen(),
+    LicenseScreen(),
     MyPageScreen(),
   ];
 
@@ -66,6 +62,16 @@ class _RootScreenState extends State<RootScreen> {
     } else {
       setState(() => _tabIndex = i);
     }
+  }
+
+  /// 하단 "지금 학습하러가기" 바 — 자격증 탭으로 전환한 뒤 바로 학습하기(과목 선택) 화면으로 이동한다.
+  void _goToStudy() {
+    setState(() => _tabIndex = 1);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final nav = _navKeys[1].currentState;
+      nav?.popUntil((route) => route.isFirst);
+      nav?.push(MaterialPageRoute(builder: (_) => const StudyScreen()));
+    });
   }
 
   @override
@@ -134,10 +140,7 @@ class _RootScreenState extends State<RootScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _BottomStudyBar(
-        selected: _tabIndex == _kStudyTabIndex,
-        onTap: () => _onDestinationSelected(_kStudyTabIndex),
-      ),
+      bottomNavigationBar: _BottomStudyBar(onTap: _goToStudy),
     );
   }
 }
@@ -212,7 +215,7 @@ class _EncourageBar extends StatelessWidget {
       color: AppColors.primary,
       child: MarqueeText(
         text: '스터디박스를 켜는 순간 합격이 가까워집니다.',
-        style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 12, letterSpacing: -0.1),
+        style: GoogleFonts.blackHanSans(color: Colors.white, fontSize: 14, letterSpacing: -0.1),
         height: _kEncourageBarHeight,
         gap: 24,
       ),
@@ -223,9 +226,8 @@ class _EncourageBar extends StatelessWidget {
 /// 하단 바 — 버튼 없이, 바 전체가 "지금 학습하러가기" 한 줄짜리 탭 영역.
 /// 파랑·보라 그라데이션 배경 위에 은은하게 깜빡이는(pulse) 효과를 줘서 눈에 띄게 한다.
 class _BottomStudyBar extends StatefulWidget {
-  final bool selected;
   final VoidCallback onTap;
-  const _BottomStudyBar({required this.selected, required this.onTap});
+  const _BottomStudyBar({required this.onTap});
 
   @override
   State<_BottomStudyBar> createState() => _BottomStudyBarState();
@@ -284,12 +286,12 @@ class _BottomStudyBarState extends State<_BottomStudyBar> with SingleTickerProvi
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 18),
-                const SizedBox(width: 6),
+                const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 20),
+                const SizedBox(width: 7),
                 Text(
                   '지금 학습하러가기',
                   style: GoogleFonts.blackHanSans(
-                    fontSize: 18,
+                    fontSize: 21,
                     color: Colors.white,
                     letterSpacing: -0.2,
                   ),

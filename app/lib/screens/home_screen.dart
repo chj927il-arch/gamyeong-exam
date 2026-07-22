@@ -84,6 +84,24 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: _BoardSection(
+            title: '공지사항',
+            icon: Icons.campaign_outlined,
+            headerColor: AppColors.primary,
+            onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoticeScreen())),
+            rows: notices
+                .take(3)
+                .map((n) => _BoardRow(
+                      leading: n.isNew ? '[NEW] ' : null,
+                      title: n.title,
+                      trailing: n.date,
+                    ))
+                .toList(),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: _BoardSection(
             title: '자주 묻는 질문',
             icon: Icons.help_outline_rounded,
             headerColor: AppColors.accentGold,
@@ -92,14 +110,6 @@ class HomeScreen extends StatelessWidget {
                 .take(3)
                 .map((f) => _BoardRow(leading: 'Q. ', title: f.question))
                 .toList(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: _NoticeBar(
-            latest: notices.first,
-            onMore: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NoticeScreen())),
           ),
         ),
       ],
@@ -443,55 +453,11 @@ class _ReviewMiniCard extends StatelessWidget {
   }
 }
 
-/// 공지사항 — 최신 공지 한 줄만 보여주는 얇은 바.
-class _NoticeBar extends StatelessWidget {
-  final NoticeItem latest;
-  final VoidCallback onMore;
-  const _NoticeBar({required this.latest, required this.onMore});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.primary.withValues(alpha: 0.06),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onMore,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            children: [
-              const Icon(Icons.campaign_outlined, size: 17, color: AppColors.primary),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(999)),
-                child: const Text('공지', style: TextStyle(color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w800)),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  latest.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text('더보기', style: TextStyle(fontSize: 12, color: AppColors.textMuted, fontWeight: FontWeight.w600)),
-              const Icon(Icons.chevron_right_rounded, size: 16, color: AppColors.textMuted),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _BoardRow {
   final String? leading;
   final String title;
-  const _BoardRow({this.leading, required this.title});
+  final String? trailing;
+  const _BoardRow({this.leading, required this.title, this.trailing});
 }
 
 class _BoardSection extends StatelessWidget {
@@ -567,6 +533,10 @@ class _BoardSection extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          if (row.trailing != null) ...[
+                            const SizedBox(width: 10),
+                            Text(row.trailing!, style: const TextStyle(fontSize: 12, color: AppColors.textMuted, fontWeight: FontWeight.w500)),
+                          ],
                         ],
                       ),
                     ),

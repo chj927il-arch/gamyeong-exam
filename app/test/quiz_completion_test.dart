@@ -86,8 +86,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1100));
     await tester.pump(const Duration(milliseconds: 500));
 
-    // 하단 "지금 학습하러가기" 바 → 과목 메뉴(StudyScreen)
+    // 하단 "지금 학습하러가기" 바 → 자격증 탭으로 전환 후 과목 메뉴(StudyScreen)를 push한다.
+    // 탭 전환(postFrameCallback)과 push 두 단계를 거치므로 프레임을 한 번 더 pump해준다.
     await tester.tap(find.text('지금 학습하러가기'));
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(StudyScreen), findsOneWidget);
 
