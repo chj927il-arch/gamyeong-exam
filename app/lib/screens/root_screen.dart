@@ -16,7 +16,7 @@ const int _kTabCount = 5;
 const double _kStudyButtonWidth = 150;
 const double _kStudyButtonHeight = 54;
 const double _kStudyButtonShadowOffset = 5;
-const double _kBottomBarHeight = 50;
+const double _kBottomBarHeight = 32;
 const int _kStudyTabIndex = 3;
 
 class _NavItem {
