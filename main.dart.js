@@ -22830,6 +22830,8 @@ qc:function qc(a){this.a=a},
 XB:function XB(){},
 XA:function XA(){},
 att(a){switch(a){case"economic_law":return"assets/images/subject_cover_economic_law.png"
+case"civil_law":return"assets/images/subject_cover_civil_law.png"
+case"business_admin":return"assets/images/subject_cover_business_admin.png"
 default:return null}},
 GG:function GG(a){this.a=a},
 Z6:function Z6(a){this.a=a},
