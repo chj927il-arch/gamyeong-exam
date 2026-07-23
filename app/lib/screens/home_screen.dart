@@ -259,6 +259,10 @@ String? _subjectCoverImage(String subjectId) {
   switch (subjectId) {
     case 'economic_law':
       return 'assets/images/subject_cover_economic_law.png';
+    case 'civil_law':
+      return 'assets/images/subject_cover_civil_law.png';
+    case 'business_admin':
+      return 'assets/images/subject_cover_business_admin.png';
     default:
       return null;
   }
