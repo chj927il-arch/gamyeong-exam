@@ -311,20 +311,23 @@ class _SubjectCoverCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(style.icon, color: Colors.white, size: 30),
-                        Text(
-                          subject.name,
-                          style: const TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w900),
-                        ),
-                      ],
+                  // 표지 이미지가 있으면 이미지 안에 이미 아이콘·제목이 포함돼 있으므로
+                  // 별도 오버레이를 그리지 않는다. 이미지가 없는 과목만 색상 배경 위에 표시.
+                  if (_subjectCoverImage(subject.id) == null)
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(style.icon, color: Colors.white, size: 30),
+                          Text(
+                            subject.name,
+                            style: const TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
